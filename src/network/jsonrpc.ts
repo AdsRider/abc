@@ -1,5 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import * as secp from '@noble/secp256k1';
+import { keccak_256 } from '@noble/hashes/sha3';
 import axios from 'axios';
 import { BlockChainRPC } from './types/method.types';
 import { Config } from './types/config.types';
@@ -48,6 +50,18 @@ export const getBlock = async (blockNumber: number) => {
   return block;
 };
 
+export const generateAddress = () => {
+  const privKey = secp.utils.randomPrivateKey();
+  const pubKey = secp.schnorr.getPublicKey(privKey);
+
+  const slicedKey = pubKey.slice(1);
+  const hashKey = keccak_256(slicedKey);
+
+  return {
+    addres: '0x' + Buffer.from(hashKey.slice(-20)).toString('hex'),
+    privateKey: Buffer.from(privKey).toString('hex'),
+  }
+};
 
 // (async () => {
 //   const url = process.env.node_uri ?? '';
