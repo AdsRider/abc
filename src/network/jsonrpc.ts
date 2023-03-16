@@ -52,7 +52,7 @@ export const getBlock = async (blockNumber: number) => {
 
 export const generateAddress = () => {
   const privKey = secp.utils.randomPrivateKey();
-  const pubKey = secp.schnorr.getPublicKey(privKey);
+  const pubKey = secp.getPublicKey(privKey);
 
   const slicedKey = pubKey.slice(1);
   const hashKey = keccak_256(slicedKey);
