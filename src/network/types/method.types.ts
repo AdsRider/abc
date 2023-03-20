@@ -8,7 +8,11 @@ export type BlockChainRPC = {
     response: string;
   },
   eth_getBlockByNumber: {
-    request: [string, boolean]; // [0xaa36a7, true]
+    request: [string, boolean]; // ['0xaa36a7', true]
     response: Block;
+  },
+  eth_sendRawTransaction: {
+    request: [string];
+    response: null;
   },
 };
