@@ -1,14 +1,10 @@
-import fs from 'node:fs';
-import path from 'node:path';
 import * as secp from '@noble/secp256k1';
 import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
 import { keccak_256 } from '@noble/hashes/sha3';
 import axios from 'axios';
 import { BlockChainRPC } from '../types/method';
-import { Config } from '../types/config';
-
-const config: Config = JSON.parse(fs.readFileSync(path.join(__dirname, '../../config.json'), 'utf-8'));
+import { config } from '../config';
 
 // TODO: config
 const chainId = 11155111;
