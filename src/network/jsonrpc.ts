@@ -79,7 +79,7 @@ export const generateTransaction = (to: string, amount: string) => {
   // db getAddress, nonce(withdrawl count), pk
   const from = '0x687854520f018c003111993cb21c9b2b7a138781';
   const privateKey = '0cf853f772d4dea97b95887bbcedbe2049069f8912a1ed13556b2f1deaa30b3e';
-  const nonce = 1;
+  const nonce = 0x2;
 
   const transaction = {
     to: '0x42ccfe646cd08041734e2bed6019b19a18a79996',
@@ -99,15 +99,27 @@ export const signTransaction = async (transaction: any, privateKey: string) => {
   return signedTx;
 };
 
-(async () => {
-  const from = '0x687854520f018c003111993cb21c9b2b7a138781';
-  const privateKey = '0cf853f772d4dea97b95887bbcedbe2049069f8912a1ed13556b2f1deaa30b3e';
-  const nonce = 1;
-  const tx = generateTransaction('', '0.001');
-  console.log(tx);
-  const signedTx = await signTransaction(tx, privateKey);
-  console.log(signedTx);
-})();
+export const sendTransaction = async (rawTransaction: string) => {
+  const method = 'eth_sendRawTransaction';
+  const result = await call(method, [rawTransaction]);
+
+  return result;
+};
+
+// (async () => {
+//   const from = '0x687854520f018c003111993cb21c9b2b7a138781';
+//   const privateKey = '0cf853f772d4dea97b95887bbcedbe2049069f8912a1ed13556b2f1deaa30b3e';
+//   const nonce = 1;
+//   const tx = generateTransaction('', '0.001');
+//   console.log(tx);
+//   const signedTx = await signTransaction(tx, privateKey);
+//   console.log(signedTx);
+
+//   if (signedTx.rawTransaction) {
+//     const submit = await sendTransaction(signedTx.rawTransaction);
+//     console.log(submit);
+//   }
+// })();
 
 
 // (async () => {

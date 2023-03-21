@@ -13,6 +13,6 @@ export type BlockChainRPC = {
   },
   eth_sendRawTransaction: {
     request: [string];
-    response: null;
+    response: string; // transactionHash
   },
 };
