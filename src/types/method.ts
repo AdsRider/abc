@@ -1,4 +1,4 @@
-import { Block } from './blockchain.types';
+import { Block } from './blockchain';
 
 const emptyParams = [] as const;
 
