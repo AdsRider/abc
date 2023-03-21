@@ -74,7 +74,7 @@ export const estimateGas = () => {
 
 };
 
-export const generateTransaction = (to: string, amount: string) => {
+export const generateTransaction = (to: string, amount: string, type: 'ETH' | 'ADS') => {
 
   // db getAddress, nonce(withdrawl count), pk
   const from = '0x687854520f018c003111993cb21c9b2b7a138781';
@@ -110,7 +110,7 @@ export const sendTransaction = async (rawTransaction: string) => {
 //   const from = '0x687854520f018c003111993cb21c9b2b7a138781';
 //   const privateKey = '0cf853f772d4dea97b95887bbcedbe2049069f8912a1ed13556b2f1deaa30b3e';
 //   const nonce = 1;
-//   const tx = generateTransaction('', '0.001');
+//   const tx = generateTransaction('', '0.001', 'ETH');
 //   console.log(tx);
 //   const signedTx = await signTransaction(tx, privateKey);
 //   console.log(signedTx);
