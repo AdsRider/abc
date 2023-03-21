@@ -87,7 +87,6 @@ export const generateTransaction = (to: string, amount: string, type: 'ETH' | 'A
     gas: 21000,
     nonce: nonce,
     data: null,
-    // optional data field to send message or execute smart contract
    };
 
    return transaction;
