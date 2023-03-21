@@ -5,8 +5,8 @@ import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
 import { keccak_256 } from '@noble/hashes/sha3';
 import axios from 'axios';
-import { BlockChainRPC } from './types/method.types';
-import { Config } from './types/config.types';
+import { BlockChainRPC } from '../types/method.types';
+import { Config } from '../config.types';
 
 const config: Config = JSON.parse(fs.readFileSync(path.join(__dirname, '../../config.json'), 'utf-8'));
 
