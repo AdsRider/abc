@@ -4,6 +4,7 @@
         "host": "",
         "username": "",
         "password": "",
-        "db": ""
+        "db": "",
+        "port": "5432"
     }
 }
