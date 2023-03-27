@@ -12,10 +12,11 @@ const queryTest = async (pool: DatabasePool) => {
 // TODO: address type 추가
 const addAddress = async (pool: DatabaseTransactionConnection, addresses: {address: string, privatekey: string}[]) => {
   const values = addresses.map(a => sql.fragment`(${a.address}, ${a.privatekey})`)
-  const result = await pool.one(sql.type(z.number())`
+
+  const result = await pool.any(sql.type(z.string())`
     insert into address
     values ${sql.join(values, sql.fragment`, `)}
-    returning count(*) as count
+    returning address
   `);
 
   return result;
@@ -25,6 +26,15 @@ const mocked = async () => {
   const pool = await connect();
   await queryTest(pool);
 
+  await pool.transaction(async (connection) => {
+    const testData = [
+      {address: 'a', privatekey: 'b'},
+      {address: 'c', privatekey: 'd'},
+      {address: 'e', privatekey: 'f'},
+    ];
+    const result = await addAddress(connection, testData);
+    console.log(result);
+  });
   await pool.end();
 };
 mocked();
