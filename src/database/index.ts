@@ -1,6 +1,7 @@
 import { DatabasePool, DatabaseTransactionConnection, sql } from 'slonik';
 import { z } from 'zod';
 import { connect } from './pool';
+import { Address } from '../types/database';
 
 const queryTest = async (pool: DatabasePool) => {
   const result = await pool.any(sql.unsafe`
@@ -9,8 +10,7 @@ const queryTest = async (pool: DatabasePool) => {
   console.log(result);
 };
 
-// TODO: address type 추가
-const addAddress = async (pool: DatabaseTransactionConnection, addresses: {address: string, privatekey: string}[]) => {
+const addAddress = async (pool: DatabaseTransactionConnection, addresses: Address[]) => {
   const values = addresses.map(a => sql.fragment`(${a.address}, ${a.privatekey})`)
 
   const result = await pool.any(sql.type(z.string())`
