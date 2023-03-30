@@ -1,9 +1,8 @@
-import { DatabasePool, DatabaseTransactionConnection, sql } from 'slonik';
+import { DatabaseTransactionConnection, sql } from 'slonik';
 import { z } from 'zod';
-import { connect } from './pool';
 import { Address } from '../types/database';
 
-const addAddress = async (pool: DatabaseTransactionConnection, addresses: Address[]) => {
+export const addAddress = async (pool: DatabaseTransactionConnection, addresses: Address[]) => {
   const values = addresses.map(a => sql.fragment`(${a.address}, ${a.privatekey})`)
 
   const result = await pool.any(sql.type(z.string())`
