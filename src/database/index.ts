@@ -3,13 +3,6 @@ import { z } from 'zod';
 import { connect } from './pool';
 import { Address } from '../types/database';
 
-const queryTest = async (pool: DatabasePool) => {
-  const result = await pool.any(sql.unsafe`
-    SELECT 1
-  `);
-  console.log(result);
-};
-
 const addAddress = async (pool: DatabaseTransactionConnection, addresses: Address[]) => {
   const values = addresses.map(a => sql.fragment`(${a.address}, ${a.privatekey})`)
 
@@ -22,19 +15,18 @@ const addAddress = async (pool: DatabaseTransactionConnection, addresses: Addres
   return result;
 };
 
-const mocked = async () => {
-  const pool = await connect();
-  await queryTest(pool);
+// const mocked = async () => {
+//   const pool = await connect();
 
-  await pool.transaction(async (connection) => {
-    const testData = [
-      {address: 'a', privatekey: 'b'},
-      {address: 'c', privatekey: 'd'},
-      {address: 'e', privatekey: 'f'},
-    ];
-    const result = await addAddress(connection, testData);
-    console.log(result);
-  });
-  await pool.end();
-};
-mocked();
+//   await pool.transaction(async (connection) => {
+//     const testData = [
+//       {address: 'a', privatekey: 'b'},
+//       {address: 'c', privatekey: 'd'},
+//       {address: 'e', privatekey: 'f'},
+//     ];
+//     const result = await addAddress(connection, testData);
+//     console.log(result);
+//   });
+//   await pool.end();
+// };
+// mocked();
