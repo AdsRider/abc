@@ -1,3 +1,10 @@
 {
-    "node_url": ""
+    "node_url": "",
+    "database": {
+        "host": "",
+        "username": "",
+        "password": "",
+        "db": "",
+        "port": "5432"
+    }
 }
