@@ -9,7 +9,8 @@ create table if not exists "user" (
     id uuid primary key default uuid_generate_v4(),
     email text not null,
     level text,
-    address text
+    address text,
+    join_time timestamptz default now()
 );
 
 create table if not exists balance (
