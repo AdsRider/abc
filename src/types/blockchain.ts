@@ -21,3 +21,5 @@ export type Transaction = {
   transactionIndex: string;
   value: string;
 };
+
+export type CurrencyType = 'ADS' | 'ETH';
