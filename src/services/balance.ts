@@ -4,6 +4,7 @@ import {
   DatabasePool,
   DatabaseTransactionConnection,
 } from 'slonik';
+import { z } from 'zod';
 import { CurrencyType } from '../types/blockchain';
 
 const sqlBalanceFragment = sql.fragment`
@@ -14,12 +15,20 @@ const sqlBalanceFragment = sql.fragment`
   available
 `;
 
-const getBalance = async (
+const balanceObject = z.object({
+  id: z.string(),
+  user_id: z.string(),
+  type: z.union([z.literal('ADS'), z.literal('ETH')]),
+  amount: z.string(),
+  available: z.string(),
+});
+
+const getBalanceById = async (
   pool: DatabasePool | DatabaseTransactionConnection,
   userId: string,
   currencyType: CurrencyType,
 ) => {
-  return pool.one(sql.unsafe`
+  return pool.one(sql.type(balanceObject)`
     SELECT ${sqlBalanceFragment}
     FROM balance
     WHERE id = ${userId} and type = ${currencyType}
@@ -32,9 +41,14 @@ const updateBalance = async (
   currencyType: CurrencyType,
   adjustAmount: BigNumber,
 ) => {
-  const balance = await getBalance(pool, userId, currencyType);
+  const balance = await getBalanceById(pool, userId, currencyType);
   const updatedBalance = new BigNumber(balance.amount).plus(adjustAmount);
 
   const result = await pool.one(sql.unsafe`
   `);
+};
+
+export {
+  getBalanceById,
+  updateBalance,
 };
