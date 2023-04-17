@@ -6,9 +6,9 @@ export const addAddress = async (pool: DatabaseTransactionConnection, addresses:
   const values = addresses.map(a => sql.fragment`(${a.address}, ${a.privatekey})`)
 
   const result = await pool.any(sql.type(z.string())`
-    insert into address
-    values ${sql.join(values, sql.fragment`, `)}
-    returning address
+    INSERT INTO address
+    VALUES ${sql.join(values, sql.fragment`, `)}
+    RETURNING address
   `);
 
   return result;
