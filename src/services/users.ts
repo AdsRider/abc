@@ -1,4 +1,5 @@
 import { DatabasePool, NotFoundError, sql } from 'slonik';
+import { z } from 'zod';
 
 const sqlUserFragment = sql.fragment`
   id,
@@ -8,9 +9,17 @@ const sqlUserFragment = sql.fragment`
   join_time
 `;
 
+const userObject = z.object({
+  id: z.string(),
+  email: z.string(),
+  level: z.string(),
+  address: z.string(),
+  join_time: z.date(),
+});
+
 const getUsers = (pool: DatabasePool) =>
   // TODO: Remove unsafe
-  pool.any(sql.unsafe`
+  pool.any(sql.type(userObject)`
     SELECT ${sqlUserFragment}
     FROM "user"
     ORDER BY id
@@ -24,7 +33,7 @@ const getUserById = async (pool: DatabasePool, id: string) => {
     clientError정리 및 구조확정이후 다시고려
   */
   try {
-    return await pool.one(sql.unsafe`
+    return await pool.one(sql.type(userObject)`
       SELECT ${sqlUserFragment}
       FROM "user"
       WHERE id = ${id}
