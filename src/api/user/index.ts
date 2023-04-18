@@ -12,8 +12,8 @@ export const UserRouter = (pool: DatabasePool) => {
     res.json(balance);
   };
 
-  router.get('/', (_, res) => res.json());
   router.get('/balance', getBalanceRequestHandler);
+  router.get('/', (_, res) => res.json());
 
   return router;
 };
