@@ -1,4 +1,5 @@
 {
+  "ts-node": { "files": true },
   "compilerOptions": {
     "rootDir": "src",
     "target": "es6",
@@ -9,9 +10,8 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "experimentalDecorators": true,
-    "typeRoots": ["./node_modules/@types","./src/types"]
+    "experimentalDecorators": true
   },
-  "include": ["src/**/*.ts", "tests/**/*.ts"],
+  "include": ["src/**/*.ts", "tests/**/*.ts", "src/@types/index.d.ts"],
   "exclude": ["node_modules"]
 }
