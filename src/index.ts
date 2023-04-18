@@ -12,6 +12,18 @@ const main = async () => {
 
   app.use(globalPrefix, MainRouter(pool));
 
-  app.listen(port);
+  const server = app.listen(port, () => {
+    console.log(`Server is Listening on PORT ${port}`);
+  });
+
+  const gracefulShutdownHandler = (signal: NodeJS.SignalsListener) => {
+    console.log(`[${new Date().toISOString()}] ${signal} signal received: closing HTTP server`);
+    server.close(() => {
+        console.log('HTTP server closed');
+    });
+  };
+
+  process.on('SIGTERM', gracefulShutdownHandler);
+  process.on('SIGINT', gracefulShutdownHandler);
 };
 main();
