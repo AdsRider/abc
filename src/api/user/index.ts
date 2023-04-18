@@ -13,7 +13,7 @@ export const UserRouter = (pool: DatabasePool) => {
   };
 
   router.get('/', (_, res) => res.json());
-  router.get('/:id/balance', getBalanceRequestHandler);
+  router.get('/balance', getBalanceRequestHandler);
 
   return router;
 };
