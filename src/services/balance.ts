@@ -23,7 +23,7 @@ const balanceObject = z.object({
   available: z.string(),
 });
 
-const getBalanceById = async (
+const getBalanceByEmail = async (
   pool: DatabasePool | DatabaseTransactionConnection,
   userId: string,
   currencyType: CurrencyType,
@@ -37,11 +37,11 @@ const getBalanceById = async (
 
 const updateBalance = async (
   pool: DatabaseTransactionConnection,
-  userId: string,
+  email: string,
   currencyType: CurrencyType,
   adjustAmount: BigNumber,
 ) => {
-  const balance = await getBalanceById(pool, userId, currencyType);
+  const balance = await getBalanceByEmail(pool, email, currencyType);
   const updatedBalance = new BigNumber(balance.amount).plus(adjustAmount);
 
   const result = await pool.one(sql.unsafe`
@@ -49,6 +49,6 @@ const updateBalance = async (
 };
 
 export {
-  getBalanceById,
+  getBalanceByEmail,
   updateBalance,
 };
