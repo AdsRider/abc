@@ -1,6 +1,6 @@
 import express from 'express';
 import { DatabasePool } from 'slonik';
-import { getBalanceById } from '../../services/balance';
+import { getBalanceByEmail } from '../../services/balance';
 import { LoginRouter } from './login';
 
 const router = express.Router();
@@ -11,7 +11,7 @@ export const UserRouter = (pool: DatabasePool) => {
     if (user == null) {
       throw new Error();
     }
-    const balance = await getBalanceById(pool, user.id, 'ADS');
+    const balance = await getBalanceByEmail(pool, user.email, 'ADS');
 
     return res.json(balance);
   };
