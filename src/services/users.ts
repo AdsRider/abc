@@ -18,9 +18,9 @@ const userObject = z.object({
 
 const createUser = (pool: DatabaseTransactionConnection, userDAO: UserDAO) =>
   pool.one(sql.type(userObject)`
-    INSERT INTO user (
+    INSERT INTO "user" (
       email,
-      password,
+      password
     ) VALUES (
       ${userDAO.email},
       ${userDAO.password}
