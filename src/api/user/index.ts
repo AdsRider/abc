@@ -20,8 +20,6 @@ export const UserRouter = (pool: DatabasePool) => {
   router.get('/', (_, res) => res.json());
 
   router.use(LoginRouter(pool));
-  router.post('/signin');
-  router.post('/login');
 
   return router;
 };

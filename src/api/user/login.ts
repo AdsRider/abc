@@ -10,11 +10,11 @@ export const LoginRouter = (pool: DatabasePool) => {
 
   const login = async (req: express.Request, res: express.Response) => {
     const body = req.body;
-    const userId = body.id;
+    const email = body.email;
     const password = body.password;
 
     try {
-      const user = await findUser(pool, userId);
+      const user = await findUser(pool, email);
 
       if (await argon2.verify(user.password, password)) {
         return res.json('OK')

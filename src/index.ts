@@ -10,6 +10,9 @@ const globalPrefix = '/api';
 const main = async () => {
   const pool = await connect();
 
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+
   app.use(globalPrefix, MainRouter(pool));
 
   const server = app.listen(port, () => {

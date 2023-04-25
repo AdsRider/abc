@@ -30,11 +30,11 @@ const createUser = (pool: DatabaseTransactionConnection, userDAO: UserDAO) =>
   `);
 ;
 
-const findUser = (pool: DatabasePool, userId: string) =>
+const findUser = (pool: DatabasePool, email: string) =>
   pool.one(sql.type(userObject.extend({ password: z.string() }))`
       SELECT ${sqlUserFragment}, password
       FROM "user"
-      WHERE id = ${userId}
+      WHERE email = ${email}
   `);
 ;
 
