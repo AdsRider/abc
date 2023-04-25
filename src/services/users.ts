@@ -3,7 +3,6 @@ import { z } from 'zod';
 import { UserDAO } from '../types/user';
 
 const sqlUserFragment = sql.fragment`
-  id,
   email,
   level,
   address,
@@ -11,7 +10,6 @@ const sqlUserFragment = sql.fragment`
 `;
 
 const userObject = z.object({
-  id: z.string(),
   email: z.string(),
   level: z.string(),
   address: z.string(),
@@ -26,15 +24,7 @@ const createUser = (pool: DatabaseTransactionConnection, userDAO: UserDAO) =>
     ) VALUES (
       ${userDAO.email},
       ${userDAO.password}
-    ) RETURNING id, email, level, address, join_time
-  `);
-;
-
-const findUser = (pool: DatabasePool, email: string) =>
-  pool.one(sql.type(userObject.extend({ password: z.string() }))`
-      SELECT ${sqlUserFragment}, password
-      FROM "user"
-      WHERE email = ${email}
+    ) RETURNING ${sqlUserFragment}
   `);
 ;
 
@@ -43,21 +33,21 @@ const getUsers = (pool: DatabasePool) =>
   pool.any(sql.type(userObject)`
     SELECT ${sqlUserFragment}
     FROM "user"
-    ORDER BY id
+    ORDER BY email
   `);
 ;
 
-const getUserById = async (pool: DatabasePool, id: string) => {
+const findUser = async (pool: DatabasePool, email: string) => {
   /*
     웹서버 뿐만아니라 블록체인 모듈에서 사용할수도있음 => client에러가 아님
     추후 작업에 의해 validation이 service단에서 벗어날수있음
     clientError정리 및 구조확정이후 다시고려
   */
   try {
-    return await pool.one(sql.type(userObject)`
-      SELECT ${sqlUserFragment}
+    return await pool.one(sql.type(userObject.extend({ password: z.string() }))`
+      SELECT ${sqlUserFragment}, password
       FROM "user"
-      WHERE id = ${id}
+      WHERE email = ${email}
     `);
   } catch (err) {
     if (err instanceof NotFoundError) {
@@ -72,5 +62,4 @@ export {
   createUser,
   findUser,
   getUsers,
-  getUserById,
 };
