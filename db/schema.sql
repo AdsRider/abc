@@ -8,6 +8,7 @@ create table if not exists address (
 create table if not exists "user" (
     id uuid primary key default uuid_generate_v4(),
     email text not null,
+    password text not null,
     level text,
     address text,
     join_time timestamptz default now()

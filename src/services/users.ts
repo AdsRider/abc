@@ -1,5 +1,6 @@
-import { DatabasePool, NotFoundError, sql } from 'slonik';
+import { DatabasePool, DatabaseTransactionConnection, NotFoundError, sql } from 'slonik';
 import { z } from 'zod';
+import { UserDAO } from '../types/user';
 
 const sqlUserFragment = sql.fragment`
   id,
@@ -16,6 +17,26 @@ const userObject = z.object({
   address: z.string(),
   join_time: z.date(),
 });
+
+const createUser = (pool: DatabaseTransactionConnection, userDAO: UserDAO) =>
+  pool.one(sql.type(userObject)`
+    INSERT INTO user (
+      email,
+      password,
+    ) VALUES (
+      ${userDAO.email},
+      ${userDAO.password}
+    ) RETURNING id, email, level, address, join_time
+  `);
+;
+
+const findUser = (pool: DatabasePool, userId: string) =>
+  pool.one(sql.type(userObject.extend({ password: z.string() }))`
+      SELECT ${sqlUserFragment}, password
+      FROM "user"
+      WHERE id = ${userId}
+  `);
+;
 
 const getUsers = (pool: DatabasePool) =>
   // TODO: Remove unsafe
@@ -48,6 +69,8 @@ const getUserById = async (pool: DatabasePool, id: string) => {
 };
 
 export {
+  createUser,
+  findUser,
   getUsers,
   getUserById,
 };
