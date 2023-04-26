@@ -16,7 +16,7 @@ const main = async () => {
     secret: 'cmVkaXJzZGEK', // echo redirsda | base64
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: true }
+    cookie: { secure: false }
   }));
 
   app.use(express.json());

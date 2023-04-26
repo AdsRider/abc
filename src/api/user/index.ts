@@ -16,8 +16,25 @@ export const UserRouter = (pool: DatabasePool) => {
     return res.json(balance);
   };
 
+  const whoami = (req: express.Request, res: express.Response) => {
+    const me = req.session.user;
+
+    return res.json(me);
+  };
+
+  const logout = (req: express.Request, res: express.Response) => {
+    if (req.session) {
+      req.session.destroy(() => {
+        res.redirect('/')
+      });
+    } else {
+      return res.redirect('/');
+    }
+  };
+
   router.get('/balance', getBalanceRequestHandler);
-  router.get('/', (_, res) => res.json());
+  router.get('/me', whoami);
+  router.get('/logout', logout);
 
   router.use(LoginRouter(pool));
 
