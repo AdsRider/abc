@@ -35,7 +35,6 @@ export const LoginRouter = (pool: DatabasePool) => {
   const signIn = async (req: express.Request, res: express.Response) => {
     const body = req.body;
 
-    // TODO: catch email unique constraint error
     const user = await pool.transaction(async (conn) => {
       try {
         const address = await generateAddress();
