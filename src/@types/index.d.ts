@@ -1,7 +1,7 @@
 import { User } from '../types/user';
 
-declare module 'express-serve-static-core' {
-  export interface Request {
+declare module 'express-session' {
+  export interface SessionData {
     user?: User;
   }
 }

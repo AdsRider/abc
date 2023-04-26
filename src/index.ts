@@ -1,4 +1,5 @@
 import 'express-async-errors';
+import session from 'express-session';
 import express from 'express';
 import crypto from 'crypto';
 import { connect } from './database/pool';
@@ -11,6 +12,12 @@ const globalPrefix = '/api';
 
 const main = async () => {
   const pool = await connect();
+  app.use(session({
+    secret: 'cmVkaXJzZGEK', // echo redirsda | base64
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: true }
+  }));
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
