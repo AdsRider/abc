@@ -61,8 +61,8 @@ export const generateAddress = () => {
   const hashKey = keccak_256(slicedKey);
 
   return {
-    addres: '0x' + Buffer.from(hashKey.slice(-20)).toString('hex'),
-    privateKey: '0x' + Buffer.from(privKey).toString('hex'),
+    address: '0x' + Buffer.from(hashKey.slice(-20)).toString('hex'),
+    privatekey: '0x' + Buffer.from(privKey).toString('hex'),
   }
 };
 
