@@ -15,6 +15,10 @@ export const LoginRouter = (pool: DatabasePool) => {
     const email = body.email;
     const password = body.password;
 
+    if (email == null || password == null) {
+      throw new ClientError(400, 'invalid_id_or_password');
+    }
+
     try {
       const user = await findUser(pool, email);
 
