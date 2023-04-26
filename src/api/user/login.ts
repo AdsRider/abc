@@ -23,7 +23,12 @@ export const LoginRouter = (pool: DatabasePool) => {
       const user = await findUser(pool, email);
 
       if (await argon2.verify(user.password, password)) {
-        return res.json('OK')
+        return res.json({
+          email: user.email,
+          level: user.level,
+          address: user.address,
+          join_time: user.join_time,
+        });
       } else {
         throw new ClientError(400, 'invalid_id_or_password');
       }
