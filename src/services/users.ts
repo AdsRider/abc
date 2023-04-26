@@ -20,10 +20,12 @@ const createUser = (pool: DatabaseTransactionConnection, userDAO: UserDAO) =>
   pool.one(sql.type(userObject)`
     INSERT INTO "user" (
       email,
-      password
+      password,
+      address
     ) VALUES (
       ${userDAO.email},
-      ${userDAO.password}
+      ${userDAO.password},
+      ${userDAO.address}
     ) RETURNING ${sqlUserFragment}
   `);
 ;

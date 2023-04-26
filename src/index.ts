@@ -4,7 +4,7 @@ import { connect } from './database/pool';
 import { MainRouter } from './api';
 
 const app = express();
-const port = 3000;
+const port = 4000;
 const globalPrefix = '/api';
 
 const main = async () => {
