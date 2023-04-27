@@ -21,18 +21,18 @@ create table if not exists balance (
     available text default '0'
 );
 
-create table if not exist image {
+create table if not exists image (
     id serial primary key,
     file_name text not null
-}
+);
 
-create table if not exist ads {
+create table if not exists ads (
     id serial primary key,
     title text not null,
     subtitle text,
     reward text not null,
-    image_id text not null,
+    image_id int not null,
     start_date timestamptz not null,
     end_date timestamptz not null,
     user_email text not null
-};
+);
