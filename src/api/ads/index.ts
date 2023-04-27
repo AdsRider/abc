@@ -1,6 +1,8 @@
 import express from 'express';
 import { DatabasePool } from 'slonik';
-import { getAdsById, getAdsList } from '../../services/ads';
+import { createAds, getAdsById, getAdsList } from '../../services/ads';
+import { AdsDAO } from '../../types/ads';
+import { ClientError } from '../../util/error';
 
 const router = express.Router();
 
@@ -13,11 +15,33 @@ export const AdsRouter = (pool: DatabasePool) => {
 
   const getAdsDetailById = async (req: express.Request, res: express.Response) => {
     const ads = await getAdsById(pool, req.params.id);
+
+    return res.json(ads);
+  };
+
+  const saveAds = async (req: express.Request, res: express.Response) => {
+    if (req.session.user == null) {
+      throw new ClientError(401, 'unauthorized');
+    }
+    const adsData: AdsDAO = {
+      title: req.body.title,
+      subtitle: req.body.subtitle,
+      reward: req.body.price,
+      image_id: req.body.imageId,
+      start_date: req.body.startDate,
+      end_date: req.body.endDate,
+      user_email: req.session.user.email,
+    };
+    const ads = await pool.transaction(async (conn) => {
+      return await createAds(conn, adsData);
+    });
+
+    return res.json(ads);
   };
 
   router.get('/:id', getAdsDetailById);
   router.get('/', getTotalAdsList);
-  router.post('/');
+  router.post('/', saveAds);
   router.delete('/');
 
   return router;
