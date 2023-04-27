@@ -23,7 +23,10 @@ create table if not exists balance (
 
 create table if not exists image (
     id serial primary key,
-    file_name text not null
+    filename text not null,
+    originalname text not null,
+    mimetype text not null,
+    size int not null
 );
 
 create table if not exists ads (
