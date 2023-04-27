@@ -20,3 +20,19 @@ create table if not exists balance (
     amount text default '0',
     available text default '0'
 );
+
+create table if not exist image {
+    id serial primary key,
+    file_name text not null
+}
+
+create table if not exist ads {
+    id serial primary key,
+    title text not null,
+    subtitle text,
+    reward text not null,
+    image_id text not null,
+    start_date timestamptz not null,
+    end_date timestamptz not null,
+    user_email text not null
+};
