@@ -46,7 +46,7 @@ export const getBlockNumber = async () => {
 };
 
 export const getBlock = async (blockNumber: number) => {
-  const hexBlockNumber = blockNumber.toString(16);
+  const hexBlockNumber = '0x' + blockNumber.toString(16);
   const method = 'eth_getBlockByNumber';
   const block = await call(method, [hexBlockNumber, true]);
 
