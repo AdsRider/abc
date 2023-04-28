@@ -2,7 +2,8 @@ create extension if not exists "uuid-ossp";
 
 create table if not exists address (
     address text primary key,
-    privatekey text not null
+    privatekey text not null,
+    nonce int default 0
 );
 
 create table if not exists "user" (
