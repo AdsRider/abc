@@ -7,4 +7,8 @@ export type Config = {
     db: string;
     port: string;
   };
+  redis: {
+    host: string;
+    port: string;
+  };
 };
