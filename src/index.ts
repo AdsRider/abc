@@ -1,8 +1,10 @@
 import 'express-async-errors';
 import session from 'express-session';
 import express from 'express';
+import RedisStore from 'connect-redis';
 import crypto from 'crypto';
 import { connect } from './database/pool';
+import { redisClient } from './database/redis';
 import { MainRouter } from './api';
 import { ClientError } from './util/error';
 
@@ -12,11 +14,20 @@ const globalPrefix = '/api';
 
 const main = async () => {
   const pool = await connect();
+  const redis = redisClient;
+  await redis.connect();
+
+  const redisStore = new RedisStore({
+    client: redis,
+    prefix: "adsrider:",
+  });
+
   app.use(session({
     secret: 'cmVkaXJzZGEK', // echo redirsda | base64
     resave: false,
     saveUninitialized: true,
     cookie: { secure: false },
+    store: redisStore,
   }));
 
   app.use(express.json());
