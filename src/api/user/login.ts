@@ -6,6 +6,7 @@ import { UserDAO } from '../../types/user';
 import { generateAddress } from '../../network/jsonrpc';
 import { addAddress } from '../../services/address';
 import { ClientError } from '../../util/error';
+import { createDefaultBalance } from '../../services/balance';
 
 const router = express.Router();
 
@@ -57,7 +58,9 @@ export const LoginRouter = (pool: DatabasePool) => {
           address: address.address,
         };
 
-        return await createUser(conn, userDAO);
+        const user = await createUser(conn, userDAO);
+        await createDefaultBalance(conn, user.email);
+        return user;
       } catch (e) {
         if (e instanceof UniqueIntegrityConstraintViolationError) {
           throw new ClientError(400, 'email_already_exist');
