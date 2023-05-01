@@ -11,7 +11,7 @@ export const UserRouter = (pool: DatabasePool) => {
     if (user == null) {
       throw new Error();
     }
-    const balance = await getBalanceByEmail(pool, user.email, 'ADS');
+    const balance = await getBalanceByEmail(pool, user.email);
 
     return res.json(balance);
   };
