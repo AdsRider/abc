@@ -16,8 +16,8 @@ create table if not exists "user" (
 
 create table if not exists balance (
     id uuid primary key default uuid_generate_v4(),
-    user_id text,
-    type text check (type in ('ADS', 'ETH')),
+    user_email text,
+    type text check (type in ('ADS', 'ETH', 'KRW')),
     amount text default '0',
     available text default '0'
 );
