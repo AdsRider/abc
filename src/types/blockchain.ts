@@ -22,4 +22,4 @@ export type Transaction = {
   value: string;
 };
 
-export type CurrencyType = 'ADS' | 'ETH';
+export type CurrencyType = 'ADS' | 'ETH' | 'KRW';

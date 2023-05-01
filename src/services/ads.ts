@@ -1,4 +1,4 @@
-import { DatabaseConnection, DatabaseTransactionConnection, sql } from 'slonik';
+import { DatabasePool, DatabaseTransactionConnection, sql } from 'slonik';
 import { z } from 'zod';
 import { AdsDAO } from '../types/ads';
 
@@ -46,7 +46,7 @@ const createAds = async (conn: DatabaseTransactionConnection, adsDAO: AdsDAO) =>
   `);
 ;
 
-const getAdsList = (conn: DatabaseConnection) =>
+const getAdsList = (conn: DatabasePool | DatabaseTransactionConnection) =>
   conn.any(sql.type(adsObject)`
     SELECT ${sqlAdsFragment}
     FROM ads
@@ -54,7 +54,7 @@ const getAdsList = (conn: DatabaseConnection) =>
   `);
 ;
 
-const getAdsById = (conn: DatabaseConnection, id: string) =>
+const getAdsById = (conn: DatabasePool | DatabaseTransactionConnection, id: string) =>
   conn.one(sql.type(adsObject)`
     SELECT ${sqlAdsFragment}
     FROM ads
