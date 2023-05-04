@@ -10,7 +10,7 @@ const sqlImageFragment = sql.fragment`
 `;
 
 const imageObject = z.object({
-  id: z.string(),
+  id: z.number(),
   filename: z.string(),
   originalname: z.string(),
   mimetype: z.string(),
