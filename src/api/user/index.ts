@@ -32,9 +32,13 @@ export const UserRouter = (pool: DatabasePool) => {
     }
   };
 
+  const withdrawalCoin = () => {
+  };
+
   router.get('/balance', getBalanceRequestHandler);
   router.get('/me', whoami);
   router.get('/logout', logout);
+  router.post('/withdrawal', withdrawalCoin);
 
   router.use(LoginRouter(pool));
 
