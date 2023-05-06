@@ -40,3 +40,19 @@ create table if not exists ads (
     end_date timestamptz not null,
     user_email text not null
 );
+
+create table if not exists block (
+    hash text primary key,
+    parent_hash text not null,
+    height int not null,
+    date timestamptz not null
+);
+
+create table if not exists transaction (
+    hash text primary key,
+    "from" text not null,
+    "to" text not null,
+    amount text not null,
+    type text check (type in ('ADS', 'ETH', 'KRW')),
+    block_hash text not null
+);
