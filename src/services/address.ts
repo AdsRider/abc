@@ -1,31 +1,42 @@
-import { DatabaseTransactionConnection, sql } from 'slonik';
+import { DatabasePool, DatabaseTransactionConnection, sql } from 'slonik';
 import { z } from 'zod';
 import { Address } from '../types/database';
 
-export const addAddress = async (pool: DatabaseTransactionConnection, addresses: Address[]) => {
+const addressFragment = sql.fragment`
+  address,
+  priavtekey,
+  nonce,
+  type
+`;
+
+const addressObject = z.object({
+  address: z.string(),
+  privatekey: z.string(),
+  nonce: z.number(),
+  type: z.string(),
+});
+
+const addAddress = async (pool: DatabaseTransactionConnection, addresses: Address[]) => {
   const values = addresses.map(a => sql.fragment`(${a.address}, ${a.privatekey})`)
 
-  const result = await pool.any(sql.type(z.string())`
+  const result = await pool.any(sql.type(addressObject)`
     INSERT INTO address
     VALUES ${sql.join(values, sql.fragment`, `)}
-    RETURNING address
+    RETURNING *
   `);
 
   return result;
 };
 
-// const mocked = async () => {
-//   const pool = await connect();
+const getAddressByType = async (pool: DatabasePool, type: string) => {
+  return pool.any(sql.type(addressObject)`
+    SELECT ${addressFragment}
+    FROM address
+    WHERE type = ${type}
+  `)
+};
 
-//   await pool.transaction(async (connection) => {
-//     const testData = [
-//       {address: 'a', privatekey: 'b'},
-//       {address: 'c', privatekey: 'd'},
-//       {address: 'e', privatekey: 'f'},
-//     ];
-//     const result = await addAddress(connection, testData);
-//     console.log(result);
-//   });
-//   await pool.end();
-// };
-// mocked();
+export {
+  addAddress,
+  getAddressByType,
+};
