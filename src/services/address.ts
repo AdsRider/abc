@@ -5,14 +5,12 @@ import { Address } from '../types/database';
 const addressFragment = sql.fragment`
   address,
   priavtekey,
-  nonce,
   type
 `;
 
 const addressObject = z.object({
   address: z.string(),
   privatekey: z.string(),
-  nonce: z.number(),
   type: z.string(),
 });
 
