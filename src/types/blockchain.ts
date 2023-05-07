@@ -33,7 +33,7 @@ export type GenerateTransactionObject = {
 export type BeforeTransactionObject = {
   to: string;
   value: string;
-  gas: number;
+  gas: number | string;
   nonce: number;
   data: string;
 };

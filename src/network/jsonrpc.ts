@@ -73,18 +73,15 @@ export const generateAddress = () => {
   }
 };
 
-export const estimateGas = () => {
-
-};
-
-export const generateADSTransaction = (transactoinObject: GenerateTransactionObject) => {
+export const generateADSTransaction = async (transactoinObject: GenerateTransactionObject) => {
   const {to, amount, nonce} = transactoinObject;
+  const gasPrice = await web3.eth.getGasPrice();
 
   const transaction = {
     to: tokenContractAddress,
     value: '0',
-    gas: 21000,
-    gasLimit: 50000,
+    gas: gasPrice,
+    gasLimit: 200000,
     nonce,
     data: tokenContract.methods.transfer(to, new BigNumber(amount).shiftedBy(decimal).toString()).encodeABI(),
    };
