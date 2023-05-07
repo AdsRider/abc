@@ -2,6 +2,7 @@ import express from 'express';
 import { DatabasePool } from 'slonik';
 import { getBalanceByEmail } from '../../services/balance';
 import { LoginRouter } from './login';
+import { WithdrawalRouter } from './withdrawal';
 
 const router = express.Router();
 
@@ -32,15 +33,12 @@ export const UserRouter = (pool: DatabasePool) => {
     }
   };
 
-  const withdrawalCoin = () => {
-  };
+  router.use(LoginRouter(pool));
 
   router.get('/balance', getBalanceRequestHandler);
   router.get('/me', whoami);
   router.get('/logout', logout);
-  router.post('/withdrawal', withdrawalCoin);
-
-  router.use(LoginRouter(pool));
+  router.use('/withdrawal', WithdrawalRouter(pool));
 
   return router;
 };
