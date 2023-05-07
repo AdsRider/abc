@@ -3,6 +3,7 @@ import { DatabasePool } from 'slonik';
 import { createAds, getAdsById, getAdsList } from '../../services/ads';
 import { AdsDAO } from '../../types/ads';
 import { ClientError } from '../../util/error';
+import { loginAuthGuard } from '../common';
 
 const router = express.Router();
 
@@ -41,6 +42,7 @@ export const AdsRouter = (pool: DatabasePool) => {
 
   router.get('/:id', getAdsDetailById);
   router.get('/', getTotalAdsList);
+  router.use(loginAuthGuard(pool));
   router.post('/', saveAds);
   router.delete('/');
 

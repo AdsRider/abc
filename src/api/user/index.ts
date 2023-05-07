@@ -1,6 +1,7 @@
 import express from 'express';
 import { DatabasePool } from 'slonik';
 import { getBalanceByEmail } from '../../services/balance';
+import { loginAuthGuard } from '../common';
 import { LoginRouter } from './login';
 import { WithdrawalRouter } from './withdrawal';
 
@@ -35,6 +36,7 @@ export const UserRouter = (pool: DatabasePool) => {
 
   router.use(LoginRouter(pool));
 
+  router.use(loginAuthGuard(pool));
   router.get('/balance', getBalanceRequestHandler);
   router.get('/me', whoami);
   router.get('/logout', logout);

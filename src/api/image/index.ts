@@ -5,6 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import { ClientError } from '../../util/error';
 import { findImage, insertImage } from '../../services/image';
+import { loginAuthGuard } from '../common';
 
 const router = express.Router();
 
@@ -62,6 +63,7 @@ export const ImageRouter = (pool: DatabasePool) => {
   };
 
   router.get('/:id', sendImage);
+  router.use(loginAuthGuard(pool));
   router.post('/', upload.single('file'), saveFile);
 
   return router;
