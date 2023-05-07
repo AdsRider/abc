@@ -106,7 +106,6 @@ export const sendTransaction = async (rawTransaction: string) => {
 export const getNonce = (address: string) => web3.eth.getTransactionCount(address);
 
 export const withdrawalADScoin = async (from: string, to: string, amount: string, privatekey: string) => {
-
   const nonce = await getNonce(from);
 
   // build tx

@@ -1,5 +1,6 @@
 import { DatabasePool, DatabaseTransactionConnection, sql } from 'slonik';
 import { z } from 'zod';
+import { AddressType } from '../types/address';
 import { Address } from '../types/database';
 
 const addressFragment = sql.fragment`
@@ -26,7 +27,7 @@ const addAddress = async (pool: DatabaseTransactionConnection, addresses: Addres
   return result;
 };
 
-const getAddressByType = async (pool: DatabasePool, type: string) => {
+const getAddressByType = async (pool: DatabasePool | DatabaseTransactionConnection, type: AddressType) => {
   return pool.any(sql.type(addressObject)`
     SELECT ${addressFragment}
     FROM address
@@ -34,7 +35,16 @@ const getAddressByType = async (pool: DatabasePool, type: string) => {
   `)
 };
 
+const getSystemAccountByType = async (pool: DatabasePool | DatabaseTransactionConnection, type: AddressType) => {
+  return pool.one(sql.type(addressObject)`
+    SELECT ${addressFragment}
+    FROM address
+    WHERE type = ${type}
+  `);
+};
+
 export {
   addAddress,
   getAddressByType,
+  getSystemAccountByType,
 };
