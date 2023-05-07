@@ -1,15 +1,22 @@
 import * as secp from '@noble/secp256k1';
 import Web3 from 'web3';
+import fs from 'fs';
+import path from 'path';
 import BigNumber from 'bignumber.js';
 import { keccak_256 } from '@noble/hashes/sha3';
 import axios from 'axios';
 import { BlockChainRPC } from '../types/method';
 import { config } from '../config';
+import { GenerateTransactionObject, SignTransactionObject } from '../types/blockchain';
 
 // TODO: config
 const chainId = 11155111;
 const decimal = 18;
 const web3 = new Web3(config.node_url);
+
+const tokenContractAddress = '0x71b7d7b137cfecf3c8cfce4cf3bba0bbf33c8faf';
+const tokenABI = JSON.parse(fs.readFileSync(path.join(__dirname, '/abi.json'), 'utf-8'));
+const tokenContract = new web3.eth.Contract(tokenABI, tokenContractAddress);
 
 export const call = async <T extends keyof BlockChainRPC>(
   method: T,
@@ -70,23 +77,24 @@ export const estimateGas = () => {
 
 };
 
-export const generateTransaction = (to: string, amount: string, type: 'ETH' | 'ADS') => {
-  // db getAddress, nonce(withdrawl count), pk
-  const nonce = 0x2;
+export const generateADSTransaction = (transactoinObject: GenerateTransactionObject) => {
+  const {to, amount, nonce} = transactoinObject;
 
   const transaction = {
-    to: '0x42ccfe646cd08041734e2bed6019b19a18a79996',
-    value: new BigNumber(amount).shiftedBy(decimal).toString(),
+    to: tokenContractAddress,
+    value: '0',
     gas: 21000,
-    nonce: nonce,
-    data: null,
+    gasLimit: 50000,
+    nonce,
+    data: tokenContract.methods.transfer(to, new BigNumber(amount).shiftedBy(decimal).toString()).encodeABI(),
    };
 
    return transaction;
 };
 
-export const signTransaction = async (transaction: any, privateKey: string) => {
-  const signedTx = await web3.eth.accounts.signTransaction(transaction, privateKey);
+export const signTransaction = async (transactionObject: SignTransactionObject) => {
+  const {transaction, privatekey} = transactionObject;
+  const signedTx = await web3.eth.accounts.signTransaction(transaction, privatekey);
 
   return signedTx;
 };
@@ -97,28 +105,3 @@ export const sendTransaction = async (rawTransaction: string) => {
 
   return result;
 };
-
-// (async () => {
-//   const from = '0x687854520f018c003111993cb21c9b2b7a138781';
-//   const privateKey = '0cf853f772d4dea97b95887bbcedbe2049069f8912a1ed13556b2f1deaa30b3e';
-//   const nonce = 1;
-//   const tx = generateTransaction('', '0.001', 'ETH');
-//   console.log(tx);
-//   const signedTx = await signTransaction(tx, privateKey);
-//   console.log(signedTx);
-
-//   if (signedTx.rawTransaction) {
-//     const submit = await sendTransaction(signedTx.rawTransaction);
-//     console.log(submit);
-//   }
-// })();
-
-
-// (async () => {
-//   const url = process.env.node_uri ?? '';
-//   const blockNumber = await call(url, 'eth_blockNumber', []);
-
-//   const block = await call(url, 'eth_getBlockByNumber', [blockNumber as string, true]);
-//   const transactions = block.transactions;
-//   console.log(transactions)
-// })();

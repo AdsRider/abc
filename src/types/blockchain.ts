@@ -23,3 +23,22 @@ export type Transaction = {
 };
 
 export type CurrencyType = 'ADS' | 'ETH' | 'KRW';
+
+export type GenerateTransactionObject = {
+  to: string;
+  nonce: number;
+  amount: string;
+};
+
+export type BeforeTransactionObject = {
+  to: string;
+  value: string;
+  gas: number;
+  nonce: number;
+  data: string;
+};
+
+export type SignTransactionObject = {
+  transaction: BeforeTransactionObject;
+  privatekey: string;
+};
