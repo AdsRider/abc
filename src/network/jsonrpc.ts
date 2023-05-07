@@ -102,3 +102,33 @@ export const sendTransaction = async (rawTransaction: string) => {
 
   return result;
 };
+
+export const getNonce = (address: string) => web3.eth.getTransactionCount(address);
+
+export const withdrawalADScoin = async (from: string, to: string, amount: string, privatekey: string) => {
+
+  const nonce = await getNonce(from);
+
+  // build tx
+  const transactionObject = {
+    to,
+    amount,
+    nonce,
+  };
+  const transaction = await generateADSTransaction(transactionObject);
+
+  // sign
+  const signTransactionObject = {
+    transaction,
+    privatekey,
+  };
+  const signedTx = await signTransaction(signTransactionObject);
+
+  // submit
+  if (signedTx.rawTransaction == null) {
+    throw new Error('4bc5ea6b-4cb7-5ae9-8ea9-deebe14484c0');
+  }
+  const txHash = await sendTransaction(signedTx.rawTransaction);
+
+  return txHash;
+};
