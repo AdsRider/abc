@@ -22,4 +22,4 @@ COPY ./docker-entrypoint.sh /usr/bin
 
 ENTRYPOINT ["/sbin/tini", "--", "/usr/bin/docker-entrypoint.sh"]
 
-CMD []
+CMD ["node", "dist/index.js"]

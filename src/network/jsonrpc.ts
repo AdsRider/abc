@@ -15,7 +15,7 @@ const decimal = 18;
 const web3 = new Web3(config.node_url);
 
 const tokenContractAddress = '0x71b7d7b137cfecf3c8cfce4cf3bba0bbf33c8faf';
-const tokenABI = JSON.parse(fs.readFileSync(path.join(__dirname, '/abi.json'), 'utf-8'));
+const tokenABI = JSON.parse(fs.readFileSync(path.join(__dirname, '/../../abi.json'), 'utf-8'));
 const tokenContract = new web3.eth.Contract(tokenABI, tokenContractAddress);
 
 export const call = async <T extends keyof BlockChainRPC>(
