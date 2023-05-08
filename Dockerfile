@@ -18,6 +18,7 @@ RUN apk add --no-cache tini
 
 COPY --from=builder /opt/adsrider/node_modules ./node_modules
 COPY --from=builder /opt/adsrider/dist ./dist
+COPY ./abi.json .
 COPY ./docker-entrypoint.sh /usr/bin
 
 ENTRYPOINT ["/sbin/tini", "--", "/usr/bin/docker-entrypoint.sh"]
