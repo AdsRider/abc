@@ -3,7 +3,6 @@ import {
   sql,
   DatabasePool,
   DatabaseTransactionConnection,
-  DatabaseConnection,
 } from 'slonik';
 import { z } from 'zod';
 import { CurrencyType } from '../types/blockchain';
@@ -38,7 +37,7 @@ const createDefaultBalance = async (pool: DatabaseTransactionConnection, userEma
 };
 
 const getBalanceByEmail = async (
-  pool: DatabaseConnection,
+  pool: DatabasePool | DatabaseTransactionConnection,
   userEmail: string,
 ) => {
   return pool.any(sql.type(balanceObject)`

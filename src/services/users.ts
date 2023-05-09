@@ -46,7 +46,8 @@ const findUser = async (pool: DatabasePool, email: string) => {
     clientError정리 및 구조확정이후 다시고려
   */
   try {
-    return await pool.one(sql.type(userObject.extend({ password: z.string() }))`
+    const findUserObject = userObject.extend({ password: z.string() });
+    return await pool.one(sql.type(findUserObject)`
       SELECT ${sqlUserFragment}, password
       FROM "user"
       WHERE email = ${email}
@@ -60,8 +61,17 @@ const findUser = async (pool: DatabasePool, email: string) => {
   }
 };
 
+const getUserByAddress = async (pool: DatabasePool | DatabaseTransactionConnection, address: string) => {
+  return pool.one(sql.type(userObject)`
+    SELECT ${sqlUserFragment}
+    FROM "user"
+    WHERE address = ${address}
+  `);
+};
+
 export {
   createUser,
   findUser,
   getUsers,
+  getUserByAddress,
 };
