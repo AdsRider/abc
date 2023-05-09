@@ -6,6 +6,7 @@ const sqlUserFragment = sql.fragment`
   email,
   level,
   address,
+  expire_date,
   join_time
 `;
 
@@ -13,6 +14,7 @@ const userObject = z.object({
   email: z.string(),
   level: z.string(),
   address: z.string(),
+  expire_date: z.date(),
   join_time: z.date(),
 });
 
