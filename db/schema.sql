@@ -45,7 +45,7 @@ create table if not exists block (
     hash text primary key,
     parent_hash text not null,
     height int not null,
-    date timestamptz not null
+    timestamp timestamptz not null
 );
 
 create table if not exists transaction (

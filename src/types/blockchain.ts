@@ -42,3 +42,19 @@ export type SignTransactionObject = {
   transaction: BeforeTransactionObject;
   privatekey: string;
 };
+
+export type TransactionDAO = {
+  hash: string;
+  from: string;
+  to: string;
+  amount: string;
+  type: 'ADS' | 'ETH' | 'KRW',
+  block_hash: string;
+};
+
+export type BlockDAO = {
+  hash: string;
+  parent_hash: string;
+  height: number;
+  timestamp: string;
+};
