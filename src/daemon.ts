@@ -5,8 +5,9 @@ import { getLatestBlockHeight, insertBlocks, insertTransactions } from './servic
 import { TransactionDAO } from './types/blockchain';
 import { sleep } from './util';
 import { abiWithSignature, decimal, tokenContractAddress, web3 } from './util/constants';
-import { sql } from 'slonik';
 import { getAllAddress } from './services/address';
+import { updateBalance, updateBalanceAndAvailable } from './services/balance';
+import { getUserByAddress } from './services/users';
 
 type TransferInputData = {
   '0': string;
@@ -19,18 +20,14 @@ type TransferInputData = {
 export const Daemon = async () => {
   const pool = await connect();
 
-  // while (true) {
-    //
-    // const topBlockHeight = await getLatestBlockHeight(pool);
-    // const blockHeight = await getBlockNumber();
+  while (true) {
+    const topBlockHeight = await getLatestBlockHeight(pool);
+    const blockHeight = await getBlockNumber();
 
-    const topBlockHeight = 3437216;
-    const blockHeight = 3437217;
-
-    // if (blockHeight - topBlockHeight <= 0) {
-    //   await sleep(6 * 1000);
-    //   continue;
-    // }
+    if (blockHeight - topBlockHeight <= 0) {
+      await sleep(6 * 1000);
+      continue;
+    }
 
     const diff = Math.min(blockHeight - topBlockHeight, 100);
     const promise = Array.from({ length: diff, }, (_, index: number) => getBlock(blockHeight - index));
@@ -94,8 +91,27 @@ export const Daemon = async () => {
 
       await insertBlocks(conn, blockDAOs);
       const txs = await insertTransactions(conn, transactionDAOs);
-    });
-  // }
 
+      for (const t of txs) {
+        const type = t.type;
+        const fromAddress = address.find(x => x.address === t.from);
+        const toAddress = address.find(x => x.address = t.to);
+        const amount = new BigNumber(t.amount);
+
+        if (fromAddress) {
+          const user = await getUserByAddress(conn, fromAddress.address);
+          const updatedBalance = await updateBalance(conn, user.email, 'ADS', amount.negated());
+          // balance --
+        }
+        if (toAddress) {
+          const user = await getUserByAddress(conn, toAddress.address);
+          const updatedBalance = await updateBalanceAndAvailable(conn, user.email, 'ADS', amount);
+          // balance ++
+        }
+      }
+
+      return;
+    });
+  }
 };
 Daemon();
