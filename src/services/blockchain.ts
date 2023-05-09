@@ -4,40 +4,44 @@ import {
   DatabaseTransactionConnection,
 } from 'slonik';
 import { z } from 'zod';
-
-// TODO 분리
-type BlockDAO = {
-  hash: string,
-  parent_hash: string,
-  height: number,
-  timestamp: string,
-};
+import { BlockDAO, TransactionDAO } from '../types/blockchain';
 
 const sqlBlockFragment = sql.fragment`
   hash,
   parent_hash,
   height,
-  date
+  timestamp
 `;
 
 const blockObject = z.object({
   hash: z.string(),
   parent_hash: z.string(),
   height: z.number(),
-  date: z.date(),
+  timestamp: z.date(),
+});
+
+const transactionObject = z.object({
+  hash: z.string(),
+  from: z.string(),
+  to: z.string(),
+  amount: z.string(),
+  type: z.union([z.literal('ADS'), z.literal('ETH'), z.literal('KRW')]),
+  block_hash: z.string(),
 });
 
 const insertBlocks = (pool: DatabaseTransactionConnection, blockData: BlockDAO[]) => {
   const blocksQuery = blockData.map(b => {
-    return sql.unsafe`(${b.hash}, ${b.parent_hash}, ${b.height}, ${b.timestamp})`;
+    return sql.unsafe`
+      (${b.hash}, ${b.parent_hash}, ${b.height}, ${b.timestamp})
+    `;
   });
 
-  return pool.one(sql.type(blockObject)`
+  return pool.any(sql.type(blockObject)`
     INSERT INTO block (
       hash,
-      block_hash,
+      parent_hash,
       height,
-      date
+      timestamp
     ) VALUES
     ${sql.join(blocksQuery, sql.fragment`,`)}
     RETURNING *
@@ -45,14 +49,38 @@ const insertBlocks = (pool: DatabaseTransactionConnection, blockData: BlockDAO[]
 };
 
 const getLatestBlockHeight = async (pool: DatabasePool | DatabaseTransactionConnection) => {
-  const result = await pool.one(sql.type(z.object({ latest: z.number() }))`
+  const maxHeightObject = z.object({ latest: z.number() });
+  const result = await pool.one(sql.type(maxHeightObject)`
     SELECT max(height) as latest FROM block
   `);
 
   return result.latest;
 };
 
+const insertTransactions = async (pool: DatabaseTransactionConnection, transactionData: TransactionDAO[]) => {
+  const transactionQuery = transactionData.map((tx) => {
+    return sql.unsafe`
+      (${tx.hash}, ${tx.from}, ${tx.to}, ${tx.amount}, ${tx.type}, ${tx.block_hash})
+    `;
+  });
+
+
+  return pool.any(sql.type(blockObject)`
+    INSERT INTO transaction (
+      hash,
+      "from",
+      "to",
+      amount,
+      type,
+      block_hash
+    ) VALUES
+    ${sql.join(transactionQuery, sql.fragment`,`)}
+    RETURNING *
+  `);
+};
+
 export {
   insertBlocks,
   getLatestBlockHeight,
+  insertTransactions,
 }

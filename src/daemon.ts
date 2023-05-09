@@ -1,10 +1,12 @@
 import { connect } from './database/pool';
 import { getBlock, getBlockNumber } from './network/jsonrpc';
 import BigNumber from 'bignumber.js';
-import { getLatestBlockHeight } from './services/block';
+import { getLatestBlockHeight, insertBlocks, insertTransactions } from './services/blockchain';
 import { TransactionDAO } from './types/blockchain';
 import { sleep } from './util';
 import { abiWithSignature, decimal, tokenContractAddress, web3 } from './util/constants';
+import { sql } from 'slonik';
+import { getAllAddress } from './services/address';
 
 type TransferInputData = {
   '0': string;
@@ -61,7 +63,7 @@ export const Daemon = async () => {
                 const contents = web3.eth.abi.decodeParameters(inputs, tx.input.substring(10)) as TransferInputData;
 
                 txDAO.to = contents.to;
-                txDAO.amount = new BigNumber(contents.amount).shiftedBy(decimal).toString();
+                txDAO.amount = new BigNumber(contents.amount).shiftedBy(-decimal).toString();
               }
             }
           }
@@ -73,10 +75,27 @@ export const Daemon = async () => {
         hash: b.hash,
         parent_hash: b.parentHash,
         number: parseInt(b.number, 16),
-        timestamp: b.timestamp,
+        timestamp: new Date(parseInt(b.timestamp, 16) * 1000).toISOString(),
         transactions: filteredTransactions,
       }
+    });
+
+    const blockDAOs = refinedBlock.map((b) => ({
+      hash: b.hash,
+      parent_hash: b.parent_hash,
+      height: b.number,
+      timestamp: b.timestamp,
+    }));
+
+    const transactionDAOs = refinedBlock.map(b => b.transactions).flat();
+
+    const result = await pool.transaction(async (conn) => {
+      const address = await getAllAddress(conn);
+
+      await insertBlocks(conn, blockDAOs);
+      const txs = await insertTransactions(conn, transactionDAOs);
     });
   // }
 
 };
+Daemon();
