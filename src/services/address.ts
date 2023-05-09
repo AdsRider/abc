@@ -5,7 +5,7 @@ import { Address } from '../types/database';
 
 const addressFragment = sql.fragment`
   address,
-  priavtekey,
+  privatekey,
   type
 `;
 
@@ -43,8 +43,18 @@ const getSystemAccountByType = async (pool: DatabasePool | DatabaseTransactionCo
   `);
 };
 
+// only for blockchain daemon
+const getAllAddress = async (pool: DatabaseTransactionConnection) => {
+  return pool.any(sql.type(addressObject)`
+    SELECT ${addressFragment}
+    FROM address
+    ORDER BY address
+  `);
+};
+
 export {
   addAddress,
   getAddressByType,
   getSystemAccountByType,
+  getAllAddress,
 };

@@ -2,7 +2,6 @@ import {
   sql,
   DatabasePool,
   DatabaseTransactionConnection,
-  DatabaseConnection,
 } from 'slonik';
 import { z } from 'zod';
 
@@ -11,7 +10,7 @@ type BlockDAO = {
   hash: string,
   parent_hash: string,
   height: number,
-  date: Date,
+  timestamp: string,
 };
 
 const sqlBlockFragment = sql.fragment`
@@ -28,19 +27,20 @@ const blockObject = z.object({
   date: z.date(),
 });
 
-const insertBlock = (pool: DatabaseTransactionConnection, blockData: BlockDAO) => {
+const insertBlocks = (pool: DatabaseTransactionConnection, blockData: BlockDAO[]) => {
+  const blocksQuery = blockData.map(b => {
+    return sql.unsafe`(${b.hash}, ${b.parent_hash}, ${b.height}, ${b.timestamp})`;
+  });
+
   return pool.one(sql.type(blockObject)`
     INSERT INTO block (
       hash,
       block_hash,
       height,
       date
-    ) VALUES (
-      ${blockData.hash},
-      ${blockData.parent_hash},
-      ${blockData.height},
-      ${blockData.date.toISOString()}
-    ) RETURNING *
+    ) VALUES
+    ${sql.join(blocksQuery, sql.fragment`,`)}
+    RETURNING *
   `);
 };
 
@@ -53,6 +53,6 @@ const getLatestBlockHeight = async (pool: DatabasePool | DatabaseTransactionConn
 };
 
 export {
-  insertBlock,
+  insertBlocks,
   getLatestBlockHeight,
 }
