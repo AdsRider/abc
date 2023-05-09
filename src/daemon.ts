@@ -101,6 +101,9 @@ export const Daemon = async () => {
         if (fromAddress) {
           const user = await getUserByAddress(conn, fromAddress.address);
           const updatedBalance = await updateBalance(conn, user.email, 'ADS', amount.negated());
+          if (updatedBalance.amount < updatedBalance.available) {
+            throw new Error('40b41b41-3c81-53ca-8a99-780ff0a4b262');
+          }
           // balance --
         }
         if (toAddress) {
