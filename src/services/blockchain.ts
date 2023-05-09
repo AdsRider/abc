@@ -65,7 +65,7 @@ const insertTransactions = async (pool: DatabaseTransactionConnection, transacti
   });
 
 
-  return pool.any(sql.type(blockObject)`
+  return pool.any(sql.type(transactionObject)`
     INSERT INTO transaction (
       hash,
       "from",
