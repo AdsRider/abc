@@ -1,16 +1,11 @@
 import * as secp from '@noble/secp256k1';
-import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
 import { keccak_256 } from '@noble/hashes/sha3';
 import axios from 'axios';
 import { BlockChainRPC } from '../types/method';
-import { config } from '../config';
 import { GenerateTransactionObject, SignTransactionObject } from '../types/blockchain';
-import { decimal, tokenABI, tokenContractAddress } from '../util/constants';
-
-const web3 = new Web3(config.node_url);
-
-const tokenContract = new web3.eth.Contract(tokenABI, tokenContractAddress);
+import { decimal, tokenContract, tokenContractAddress, web3 } from '../util/constants';
+import { config } from '../config';
 
 export const call = async <T extends keyof BlockChainRPC>(
   method: T,
