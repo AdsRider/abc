@@ -32,35 +32,22 @@ const createUser = (pool: DatabaseTransactionConnection, userDAO: UserDAO) =>
   `);
 ;
 
-const getUsers = (pool: DatabasePool) =>
-  // TODO: Remove unsafe
-  pool.any(sql.type(userObject)`
+const getUsersByEmail = (pool: DatabasePool, email: string) =>
+  pool.one(sql.type(userObject)`
     SELECT ${sqlUserFragment}
     FROM "user"
-    ORDER BY email
+    WHERE email = ${email}
   `);
 ;
 
+// login 전용
 const findUser = async (pool: DatabasePool, email: string) => {
-  /*
-    웹서버 뿐만아니라 블록체인 모듈에서 사용할수도있음 => client에러가 아님
-    추후 작업에 의해 validation이 service단에서 벗어날수있음
-    clientError정리 및 구조확정이후 다시고려
-  */
-  try {
-    const findUserObject = userObject.extend({ password: z.string() });
-    return await pool.one(sql.type(findUserObject)`
-      SELECT ${sqlUserFragment}, password
-      FROM "user"
-      WHERE email = ${email}
-    `);
-  } catch (err) {
-    if (err instanceof NotFoundError) {
-        // TODO: Throw client Error
-    }
-
-    throw err;
-  }
+  const findUserObject = userObject.extend({ password: z.string() });
+  return await pool.one(sql.type(findUserObject)`
+    SELECT ${sqlUserFragment}, password
+    FROM "user"
+    WHERE email = ${email}
+  `);
 };
 
 const getUserByAddress = async (pool: DatabasePool | DatabaseTransactionConnection, address: string) => {
@@ -74,6 +61,6 @@ const getUserByAddress = async (pool: DatabasePool | DatabaseTransactionConnecti
 export {
   createUser,
   findUser,
-  getUsers,
+  getUsersByEmail,
   getUserByAddress,
 };

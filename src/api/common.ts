@@ -1,6 +1,6 @@
 import express from 'express';
 import { DatabasePool } from 'slonik';
-import { findUser } from '../services/users';
+import { getUsersByEmail } from '../services/users';
 import { ClientError } from '../util/error';
 
 const loginAuthGuard = (pool: DatabasePool) => {
@@ -11,7 +11,7 @@ const loginAuthGuard = (pool: DatabasePool) => {
       throw new ClientError(401, 'need_login');
     }
 
-    const updatedUser = await findUser(pool, user.email);
+    const updatedUser = await getUsersByEmail(pool, user.email);
 
     req.session.user = updatedUser;
 

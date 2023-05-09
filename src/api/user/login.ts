@@ -28,6 +28,7 @@ export const LoginRouter = (pool: DatabasePool) => {
           email: user.email,
           level: user.level,
           address: user.address,
+          expire_date: user.expire_date,
           join_time: user.join_time,
         };
 
