@@ -40,12 +40,12 @@ const getUsersByEmail = (pool: DatabasePool, email: string) =>
   `);
 ;
 
-const updateExpireDate = (pool: DatabasePool, email: string, expire_date: Date) => 
+const updateExpireDate = (pool: DatabasePool, email: string, expire_date: Date) =>
   pool.one(sql.type(userObject)`
-    UPDATE balance
+    UPDATE "user"
       SET expired_date = ${expire_date.toISOString()}
     WHERE email = ${email}
-    RETURNING *
+    RETURNING ${sqlUserFragment}
   `);
 
 // login 전용
