@@ -56,7 +56,7 @@ const getCurrencyBalanceByEmail = async (
   return pool.one(sql.type(balanceObject)`
     SELECT ${sqlBalanceFragment}
     FROM balance
-    WHERE user_email = ${userEmail} and currency = ${currency}
+    WHERE user_email = ${userEmail} and type = ${currency}
   `);
 };
 
