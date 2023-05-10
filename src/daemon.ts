@@ -93,10 +93,12 @@ export const Daemon = async () => {
 
       if (blockDAOs.length > 0) {
         await insertBlocks(conn, blockDAOs);
+        console.log(`[info] block ${blockDAOs.length + 1} updated last = ${blockDAOs[blockDAOs.length -1].height}`);
       }
 
       if (transactionDAOs.length > 0) {
         const txs = await insertTransactions(conn, transactionDAOs);
+        console.log(`[info] ${transactionDAOs.length} ADS transaction found`);
 
         for (const t of txs) {
           const type = t.type;
@@ -110,12 +112,14 @@ export const Daemon = async () => {
             if (updatedBalance.amount < updatedBalance.available) {
               throw new Error('40b41b41-3c81-53ca-8a99-780ff0a4b262');
             }
+            console.log(`[info] withdrawal ${withdrawal.user_email} balance updated`);
             // balance --
           }
           if (toAddress) {
             const user = await getUserByAddress(conn, toAddress.address);
             const updatedBalance = await updateBalanceAndAvailable(conn, user.email, 'ADS', amount);
             // balance ++
+            console.log(`[info] deposit ${user.email} balance updated`);
           }
         }
       }
