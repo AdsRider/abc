@@ -8,6 +8,7 @@ import { abiWithSignature, decimal, tokenContractAddress, web3 } from './util/co
 import { getAllAddress } from './services/address';
 import { updateBalance, updateBalanceAndAvailable } from './services/balance';
 import { getUserByAddress } from './services/users';
+import { getWithdrawalByHash } from './services/dw';
 
 type TransferInputData = {
   '0': string;
@@ -29,7 +30,7 @@ export const Daemon = async () => {
       continue;
     }
 
-    const diff = Math.min(blockHeight - topBlockHeight, 100);
+    const diff = Math.min(blockHeight - topBlockHeight, 10);
     const promise = Array.from({ length: diff, }, (_, index: number) => getBlock(blockHeight - index));
     const blocks = await Promise.all(promise);
 
@@ -90,27 +91,32 @@ export const Daemon = async () => {
     const result = await pool.transaction(async (conn) => {
       const address = await getAllAddress(conn);
 
-      await insertBlocks(conn, blockDAOs);
-      const txs = await insertTransactions(conn, transactionDAOs);
+      if (blockDAOs.length > 0) {
+        await insertBlocks(conn, blockDAOs);
+      }
 
-      for (const t of txs) {
-        const type = t.type;
-        const fromAddress = address.find(x => x.address === t.from);
-        const toAddress = address.find(x => x.address = t.to);
-        const amount = new BigNumber(t.amount);
+      if (transactionDAOs.length > 0) {
+        const txs = await insertTransactions(conn, transactionDAOs);
 
-        if (fromAddress) {
-          const user = await getUserByAddress(conn, fromAddress.address);
-          const updatedBalance = await updateBalance(conn, user.email, 'ADS', amount.negated());
-          if (updatedBalance.amount < updatedBalance.available) {
-            throw new Error('40b41b41-3c81-53ca-8a99-780ff0a4b262');
+        for (const t of txs) {
+          const type = t.type;
+          const fromAddress = address.find(x => x.address === t.from);
+          const toAddress = address.find(x => x.address = t.to);
+          const amount = new BigNumber(t.amount);
+
+          if (fromAddress) {
+            const withdrawal = await getWithdrawalByHash(conn, t.hash);
+            const updatedBalance = await updateBalance(conn, withdrawal.user_email, 'ADS', amount.negated());
+            if (updatedBalance.amount < updatedBalance.available) {
+              throw new Error('40b41b41-3c81-53ca-8a99-780ff0a4b262');
+            }
+            // balance --
           }
-          // balance --
-        }
-        if (toAddress) {
-          const user = await getUserByAddress(conn, toAddress.address);
-          const updatedBalance = await updateBalanceAndAvailable(conn, user.email, 'ADS', amount);
-          // balance ++
+          if (toAddress) {
+            const user = await getUserByAddress(conn, toAddress.address);
+            const updatedBalance = await updateBalanceAndAvailable(conn, user.email, 'ADS', amount);
+            // balance ++
+          }
         }
       }
 

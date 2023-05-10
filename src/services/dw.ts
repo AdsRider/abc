@@ -75,7 +75,16 @@ const getHistoryByUser = async (pool: DatabasePool, email: string, address: stri
   return history.sort((a, b) => a.timestamp > b.timestamp ? 1 : -1);
 };
 
+const getWithdrawalByHash = async (conn: DatabaseTransactionConnection, hash: string) => {
+  return conn.one(sql.type(withdrawalObject)`
+    SELECT ${withdrawalFragment}
+    FROM withdrawal
+    WHERE hash = ${hash}
+  `);
+};
+
 export {
   saveWithdrawalHistory,
   getHistoryByUser,
+  getWithdrawalByHash,
 }
