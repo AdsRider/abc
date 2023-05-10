@@ -5,7 +5,7 @@ import { updateExpireDate } from '../../services/users';
 import { ClientError } from '../../util/error';
 import { loginAuthGuard } from '../common';
 import { LoginRouter } from './login';
-import { WithdrawalRouter } from './withdrawal';
+import { DwRouter } from './dw';
 
 const router = express.Router();
 
@@ -59,8 +59,8 @@ export const UserRouter = (pool: DatabasePool) => {
   router.get('/balance', getBalanceRequestHandler);
   router.get('/me', whoami);
   router.get('/logout', logout);
-  router.use('/withdrawal', WithdrawalRouter(pool));
   router.post('/buyticket', buyTicket);
+  router.use(DwRouter(pool));
 
   return router;
 };

@@ -4,6 +4,7 @@ import { DatabasePool } from 'slonik';
 import { withdrawalADScoin } from '../../network/jsonrpc';
 import { getSystemAccountByType } from '../../services/address';
 import { getBalanceByEmail, updateAvailable } from '../../services/balance';
+import { saveWithdrawalHistory } from '../../services/dw';
 import { ClientError } from '../../util/error';
 
 const router = express.Router();
@@ -13,7 +14,7 @@ type WithdrawalBody = {
   to: string;
 }
 
-export const WithdrawalRouter = (pool: DatabasePool) => {
+export const DwRouter = (pool: DatabasePool) => {
   const withdrawalCoin = async (req: express.Request, res: express.Response) => {
     const user = req.session.user;
     if (user == null) {
@@ -43,7 +44,8 @@ export const WithdrawalRouter = (pool: DatabasePool) => {
       const txHash = await withdrawalADScoin(from, to, amount.toString(), privatekey);
 
       // 변경된 잔고사항 반영
-      const updatedBalance = await updateAvailable(pool, user.email, 'ADS', amount.negated());
+      await updateAvailable(pool, user.email, 'ADS', amount.negated());
+      await saveWithdrawalHistory(pool, user.address, user.email, amount.toString(), txHash);
 
       return txHash;
     });
@@ -51,7 +53,13 @@ export const WithdrawalRouter = (pool: DatabasePool) => {
     return res.json(result);
   };
 
-  router.post('/', withdrawalCoin);
+  const getDwHistory = async (req: express.Request, res: express.Response) => {
+    const user = req.session.user!;
+
+  };
+
+  router.post('/withdrawal', withdrawalCoin);
+  router.get('/dw/history', getDwHistory);
 
   return router;
 };
