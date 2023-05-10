@@ -29,12 +29,12 @@ export const UserRouter = (pool: DatabasePool) => {
   const buyTicket = async (req: express.Request, res: express.Response) => {
     const user = req.session.user!;
     const day = req.body.day as number;
-    const expire_date = user.expire_date;
+    const expired_date = user.expired_date;
     const extendPeriod = day * 24 * 60 * 60;
     const now = new Date();
 
-    const updatedDate = now < expire_date
-      ? new Date(+expire_date + extendPeriod)
+    const updatedDate = now < expired_date
+      ? new Date(+expired_date + extendPeriod)
       : new Date(+now + extendPeriod);
 
     const updatedUser = await updateExpireDate(pool, user.email, updatedDate);

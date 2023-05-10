@@ -11,7 +11,7 @@ create table if not exists "user" (
     password text not null,
     level text,
     address text,
-    expire_date timestamptz default now(),
+    expired_date timestamptz default now(),
     join_time timestamptz default now()
 );
 

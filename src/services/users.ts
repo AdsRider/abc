@@ -6,7 +6,7 @@ const sqlUserFragment = sql.fragment`
   email,
   level,
   address,
-  expire_date,
+  expired_date,
   join_time
 `;
 
@@ -14,7 +14,7 @@ const userObject = z.object({
   email: z.string(),
   level: z.string(),
   address: z.string(),
-  expire_date: z.date(),
+  expired_date: z.date(),
   join_time: z.date(),
 });
 
@@ -40,10 +40,10 @@ const getUsersByEmail = (pool: DatabasePool, email: string) =>
   `);
 ;
 
-const updateExpireDate = (pool: DatabasePool, email: string, expire_date: Date) =>
+const updateExpireDate = (pool: DatabasePool, email: string, expired_date: Date) =>
   pool.one(sql.type(userObject)`
     UPDATE "user"
-      SET expired_date = ${expire_date.toISOString()}
+      SET expired_date = ${expired_date.toISOString()}
     WHERE email = ${email}
     RETURNING ${sqlUserFragment}
   `);
