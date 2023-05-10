@@ -68,3 +68,12 @@ create table if not exists withdrawal (
     timestamp timestamptz default now(),
     status text default 'need_check'
 );
+
+create table if not exists special_log (
+    id uuid primary key default uuid_generate_v4(),
+    memo text not null,
+    amount text not null,
+    user_email text not null,
+    address text not null,
+    timestamp timestamptz default now()
+);

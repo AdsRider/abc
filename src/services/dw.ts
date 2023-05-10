@@ -32,6 +32,24 @@ const depositHistoryFragment = sql.fragment`
   timestamp
 `;
 
+const specialLogObject = z.object({
+  id: z.string(),
+  memo: z.string(),
+  amount: z.string(),
+  user_email: z.string(),
+  address: z.string(),
+  timestamp: z.date(),
+});
+
+const specialLogFragment = sql.fragment`
+  id,
+  memo,
+  amount,
+  user_email,
+  address,
+  timestamp
+`;
+
 const saveWithdrawalHistory = (conn: DatabaseTransactionConnection, address: string, user_email: string, amount: string, hash: string) => {
   return conn.one(sql.type(withdrawalObject)`
     INSERT INTO withdrawal (
@@ -60,6 +78,11 @@ const getHistoryByUser = async (pool: DatabasePool, email: string, address: stri
     FROM transaction
     WHERE "to" = ${address}
   `);
+  const specialLog = await pool.any(sql.type(specialLogObject)`
+    SELECT ${specialLogFragment}
+    FROM special_log
+    WHERE user_email = ${email} and address = ${address}
+  `);
 
   const history = [
     ...withdrawal.map(w => ({
@@ -73,6 +96,12 @@ const getHistoryByUser = async (pool: DatabasePool, email: string, address: stri
       hash: d.hash,
       timestamp: d.timestamp,
       type: 'deposit',
+    })),
+    ...specialLog.map(s => ({
+      amount: s.amount,
+      hash: '',
+      timestamp: s.timestamp,
+      type: s.memo,
     })),
   ];
 
