@@ -55,5 +55,15 @@ create table if not exists transaction (
     "to" text not null,
     amount text not null,
     type text check (type in ('ADS', 'ETH', 'KRW')),
-    block_hash text not null
+    block_hash text not null,
+    timestamp timestamptz
+);
+
+create table if not exists withdrawal (
+    id uuid primary key default uuid_generate_v4(),
+    address text not null,
+    user_email text not null,
+    amount text not null,
+    hash text not null,
+    timestamp timestamptz default now()
 );

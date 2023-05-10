@@ -43,7 +43,8 @@ export const Daemon = async () => {
             from: tx.from,
             to: '',
             amount: '0',
-            type: 'ADS'
+            type: 'ADS',
+            timestamp: new Date(parseInt(b.timestamp, 16) * 1000).toISOString(),
           };
 
           if (tx.input != null) {

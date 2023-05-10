@@ -20,13 +20,14 @@ const blockObject = z.object({
   timestamp: z.date(),
 });
 
-const transactionObject = z.object({
+export const transactionObject = z.object({
   hash: z.string(),
   from: z.string(),
   to: z.string(),
   amount: z.string(),
   type: z.union([z.literal('ADS'), z.literal('ETH'), z.literal('KRW')]),
   block_hash: z.string(),
+  timestamp: z.date(),
 });
 
 const insertBlocks = (pool: DatabaseTransactionConnection, blockData: BlockDAO[]) => {
@@ -60,7 +61,7 @@ const getLatestBlockHeight = async (pool: DatabasePool | DatabaseTransactionConn
 const insertTransactions = async (pool: DatabaseTransactionConnection, transactionData: TransactionDAO[]) => {
   const transactionQuery = transactionData.map((tx) => {
     return sql.unsafe`
-      (${tx.hash}, ${tx.from}, ${tx.to}, ${tx.amount}, ${tx.type}, ${tx.block_hash})
+      (${tx.hash}, ${tx.from}, ${tx.to}, ${tx.amount}, ${tx.type}, ${tx.block_hash}, ${tx.timestamp})
     `;
   });
 
@@ -72,7 +73,8 @@ const insertTransactions = async (pool: DatabaseTransactionConnection, transacti
       "to",
       amount,
       type,
-      block_hash
+      block_hash,
+      timestamp
     ) VALUES
     ${sql.join(transactionQuery, sql.fragment`,`)}
     RETURNING *

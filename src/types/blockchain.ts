@@ -50,6 +50,7 @@ export type TransactionDAO = {
   amount: string;
   type: 'ADS' | 'ETH' | 'KRW',
   block_hash: string;
+  timestamp: string,
 };
 
 export type BlockDAO = {
