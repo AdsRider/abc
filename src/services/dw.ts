@@ -8,7 +8,8 @@ const withdrawalFragment = sql.fragment`
   user_email,
   amount,
   hash,
-  timestamp
+  timestamp,
+  status
 `;
 
 const withdrawalObject = z.object({
@@ -18,6 +19,7 @@ const withdrawalObject = z.object({
   amount: z.string(),
   hash: z.string(),
   timestamp: z.date(),
+  status: z.string(),
 });
 
 const depositHistoryFragment = sql.fragment`
@@ -83,8 +85,18 @@ const getWithdrawalByHash = async (conn: DatabaseTransactionConnection, hash: st
   `);
 };
 
+const updateWithdrawalStatus = async (conn: DatabaseTransactionConnection, hash: string, status: string) => {
+  return conn.one(sql.type(withdrawalObject)`
+    UPDATE withdrawal
+    SET status = ${status}
+    WHERE hash = ${hash}
+    RETURNING ${withdrawalFragment}
+  `);
+};
+
 export {
   saveWithdrawalHistory,
   getHistoryByUser,
   getWithdrawalByHash,
+  updateWithdrawalStatus,
 }

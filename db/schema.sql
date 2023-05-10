@@ -56,7 +56,8 @@ create table if not exists transaction (
     amount text not null,
     type text check (type in ('ADS', 'ETH', 'KRW')),
     block_hash text not null,
-    timestamp timestamptz
+    timestamp timestamptz,
+    status text default 'need_check'
 );
 
 create table if not exists withdrawal (

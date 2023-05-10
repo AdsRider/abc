@@ -8,7 +8,7 @@ import { abiWithSignature, decimal, tokenContractAddress, web3 } from './util/co
 import { getAllAddress } from './services/address';
 import { updateBalance, updateBalanceAndAvailable } from './services/balance';
 import { getUserByAddress } from './services/users';
-import { getWithdrawalByHash } from './services/dw';
+import { getWithdrawalByHash, updateWithdrawalStatus } from './services/dw';
 
 type TransferInputData = {
   '0': string;
@@ -108,11 +108,14 @@ export const Daemon = async () => {
 
           if (fromAddress) {
             const withdrawal = await getWithdrawalByHash(conn, t.hash);
-            const updatedBalance = await updateBalance(conn, withdrawal.user_email, 'ADS', amount.negated());
-            if (updatedBalance.amount < updatedBalance.available) {
-              throw new Error('40b41b41-3c81-53ca-8a99-780ff0a4b262');
+            if (withdrawal.status !== 'checked') {
+              const updatedBalance = await updateBalance(conn, withdrawal.user_email, 'ADS', amount.negated());
+              if (updatedBalance.amount < updatedBalance.available) {
+                throw new Error('40b41b41-3c81-53ca-8a99-780ff0a4b262');
+              }
+              await updateWithdrawalStatus(conn, t.hash, 'checked');
+              console.log(`[info] withdrawal ${withdrawal.user_email} balance updated`);
             }
-            console.log(`[info] withdrawal ${withdrawal.user_email} balance updated`);
             // balance --
           }
           if (toAddress) {
