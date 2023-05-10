@@ -24,8 +24,8 @@ const withdrawalObject = z.object({
 
 const depositHistoryFragment = sql.fragment`
   hash,
-  from,
-  to,
+  "from",
+  "to",
   amount,
   type,
   block_hash,
@@ -58,7 +58,7 @@ const getHistoryByUser = async (pool: DatabasePool, email: string, address: stri
   const deposit = await pool.any(sql.type(transactionObject)`
     SELECT ${depositHistoryFragment}
     FROM transaction
-    WHERE to = ${address}
+    WHERE "to" = ${address}
   `);
 
   const history = [
