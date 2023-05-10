@@ -40,6 +40,14 @@ const getUsersByEmail = (pool: DatabasePool, email: string) =>
   `);
 ;
 
+const updateExpireDate = (pool: DatabasePool, email: string, expire_date: Date) =>
+  pool.one(sql.type(userObject)`
+    UPDATE "user"
+      SET expired_date = ${expire_date.toISOString()}
+    WHERE email = ${email}
+    RETURNING ${sqlUserFragment}
+  `);
+
 // login 전용
 const findUser = async (pool: DatabasePool, email: string) => {
   const findUserObject = userObject.extend({ password: z.string() });
@@ -63,4 +71,5 @@ export {
   findUser,
   getUsersByEmail,
   getUserByAddress,
+  updateExpireDate
 };
