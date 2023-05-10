@@ -29,7 +29,7 @@ const depositHistoryFragment = sql.fragment`
   amount,
   type,
   block_hash,
-  timestamp,
+  timestamp
 `;
 
 const saveWithdrawalHistory = (conn: DatabaseTransactionConnection, address: string, user_email: string, amount: string, hash: string) => {
