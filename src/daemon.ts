@@ -108,7 +108,7 @@ export const Daemon = async () => {
 
           if (fromAddress) {
             const withdrawal = await getWithdrawalByHash(conn, t.hash);
-            if (withdrawal.status !== 'checked') {
+            if (withdrawal != null && withdrawal.status !== 'checked') {
               const updatedBalance = await updateBalance(conn, withdrawal.user_email, 'ADS', amount.negated());
               if (updatedBalance.amount < updatedBalance.available) {
                 throw new Error('40b41b41-3c81-53ca-8a99-780ff0a4b262');

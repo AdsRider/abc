@@ -78,7 +78,7 @@ const getHistoryByUser = async (pool: DatabasePool, email: string, address: stri
 };
 
 const getWithdrawalByHash = async (conn: DatabaseTransactionConnection, hash: string) => {
-  return conn.one(sql.type(withdrawalObject)`
+  return conn.maybeOne(sql.type(withdrawalObject)`
     SELECT ${withdrawalFragment}
     FROM withdrawal
     WHERE hash = ${hash}
