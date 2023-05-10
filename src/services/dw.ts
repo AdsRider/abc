@@ -63,12 +63,16 @@ const getHistoryByUser = async (pool: DatabasePool, email: string, address: stri
     ...withdrawal.map(w => ({
       amount: w.amount,
       hash: w.hash,
+      timestamp: w.timestamp,
     })),
     ...deposit.map(d => ({
       amount: d.amount,
       hash: d.hash,
+      timestamp: d.timestamp,
     })),
-  ]
+  ];
+
+  return history.sort((a, b) => a.timestamp > b.timestamp ? 1 : -1);
 };
 
 export {

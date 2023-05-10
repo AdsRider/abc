@@ -4,7 +4,7 @@ import { DatabasePool } from 'slonik';
 import { withdrawalADScoin } from '../../network/jsonrpc';
 import { getSystemAccountByType } from '../../services/address';
 import { getBalanceByEmail, updateAvailable } from '../../services/balance';
-import { saveWithdrawalHistory } from '../../services/dw';
+import { getHistoryByUser, saveWithdrawalHistory } from '../../services/dw';
 import { ClientError } from '../../util/error';
 
 const router = express.Router();
@@ -55,7 +55,9 @@ export const DwRouter = (pool: DatabasePool) => {
 
   const getDwHistory = async (req: express.Request, res: express.Response) => {
     const user = req.session.user!;
+    const history = await getHistoryByUser(pool, user.email, user.address);
 
+    return res.json(history);
   };
 
   router.post('/withdrawal', withdrawalCoin);
