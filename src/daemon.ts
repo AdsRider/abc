@@ -41,7 +41,7 @@ export const Daemon = async () => {
           const txDAO: TransactionDAO = {
             hash: tx.hash,
             block_hash: tx.blockHash,
-            from: tx.from,
+            from: tx.from.toLowerCase(),
             to: '',
             amount: '0',
             type: 'ADS',
@@ -61,7 +61,7 @@ export const Daemon = async () => {
 
                 const contents = web3.eth.abi.decodeParameters(inputs, tx.input.substring(10)) as TransferInputData;
 
-                txDAO.to = contents.to;
+                txDAO.to = contents.to.toLowerCase();
                 txDAO.amount = new BigNumber(contents.amount).shiftedBy(-decimal).toString();
               }
             }

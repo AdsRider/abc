@@ -76,7 +76,7 @@ const getHistoryByUser = async (pool: DatabasePool, email: string, address: stri
   const deposit = await pool.any(sql.type(transactionObject)`
     SELECT ${depositHistoryFragment}
     FROM transaction
-    WHERE "to" = ${address.toLowerCase()}
+    WHERE LOWER("to") = ${address.toLowerCase()}
   `);
   const specialLog = await pool.any(sql.type(specialLogObject)`
     SELECT ${specialLogFragment}
