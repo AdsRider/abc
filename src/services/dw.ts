@@ -58,7 +58,7 @@ const saveWithdrawalHistory = (conn: DatabaseTransactionConnection, address: str
       amount,
       hash
     ) VALUES (
-      ${address},
+      ${address.toLowerCase()},
       ${user_email},
       ${amount},
       ${hash}
@@ -70,18 +70,18 @@ const getHistoryByUser = async (pool: DatabasePool, email: string, address: stri
   const withdrawal = await pool.any(sql.type(withdrawalObject)`
     SELECT ${withdrawalFragment}
     FROM withdrawal
-    WHERE user_email = ${email} and address = ${address}
+    WHERE user_email = ${email} and LOWER(address) = ${address}
     ORDER BY timestamp
   `);
   const deposit = await pool.any(sql.type(transactionObject)`
     SELECT ${depositHistoryFragment}
     FROM transaction
-    WHERE "to" = ${address}
+    WHERE "to" = ${address.toLowerCase()}
   `);
   const specialLog = await pool.any(sql.type(specialLogObject)`
     SELECT ${specialLogFragment}
     FROM special_log
-    WHERE user_email = ${email} and address = ${address}
+    WHERE user_email = ${email} and LOWER(address) = ${address.toLowerCase()}
   `);
 
   const history = [

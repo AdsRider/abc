@@ -102,8 +102,8 @@ export const Daemon = async () => {
 
         for (const t of txs) {
           const type = t.type;
-          const fromAddress = address.find(x => x.address === t.from);
-          const toAddress = address.find(x => x.address = t.to);
+          const fromAddress = address.find(x => x.address.toLowerCase() === t.from.toLowerCase());
+          const toAddress = address.find(x => x.address.toLowerCase() === t.to.toLowerCase());
           const amount = new BigNumber(t.amount);
 
           if (fromAddress) {
