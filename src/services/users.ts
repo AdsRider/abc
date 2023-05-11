@@ -59,10 +59,11 @@ const findUser = async (pool: DatabasePool, email: string) => {
 };
 
 const getUserByAddress = async (pool: DatabasePool | DatabaseTransactionConnection, address: string) => {
+  const lowerAddress = address.toLowerCase();
   return pool.one(sql.type(userObject)`
     SELECT ${sqlUserFragment}
     FROM "user"
-    WHERE address = ${address}
+    WHERE LOWER(address) = ${lowerAddress}
   `);
 };
 
