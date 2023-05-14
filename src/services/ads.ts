@@ -1,6 +1,6 @@
 import { DatabasePool, DatabaseTransactionConnection, sql } from 'slonik';
 import { z } from 'zod';
-import { AdsDAO } from '../types/ads';
+import { AdsDAO, SaveAdsResultDAO } from '../types/ads';
 
 const sqlAdsFragment = sql.fragment`
   id,
@@ -22,6 +22,24 @@ const adsObject = z.object({
   start_date: z.date(),
   end_date: z.date(),
   user_email: z.string(),
+});
+
+const adsResultFragment = sql.fragment`
+  id,
+  ads_id,
+  user_email,
+  path,
+  start_time,
+  end_time
+`;
+
+const adsResultObject = z.object({
+  id: z.string(),
+  ads_id: z.string(),
+  user_email: z.string(),
+  path: z.any(), // TODO https://zod.dev/?id=json-type
+  start_time: z.date(),
+  end_time: z.date(),
 });
 
 const createAds = async (conn: DatabaseTransactionConnection, adsDAO: AdsDAO) =>
@@ -63,8 +81,27 @@ const getAdsById = (conn: DatabasePool | DatabaseTransactionConnection, id: stri
   // TODO: 상세내역
 ;
 
+const saveAdsResult = async (conn: DatabaseTransactionConnection, body: SaveAdsResultDAO) => {
+  return conn.one(sql.type(adsResultObject)`
+    INSERT INTO ads_result (
+      ads_id,
+      user_email,
+      path,
+      start_time,
+      end_time,
+    ) VALUES (
+      ${body.ads_id},
+      ${body.user_email},
+      ${body.path},
+      ${body.start_time},
+      ${body.end_time}
+    ) RETURNING ${adsResultFragment}
+  `);
+};
+
 export {
   createAds,
   getAdsList,
   getAdsById,
+  saveAdsResult,
 };

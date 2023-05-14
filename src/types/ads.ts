@@ -11,3 +11,13 @@ export type Ads = {
 
 export type AdsDAO = Omit<Ads, 'id'>;
 
+export type SaveAdsResultBody = {
+  ads_id: string;
+  path: any;
+  start_time: number;
+  end_time: number;
+};
+
+export type SaveAdsResultDAO = SaveAdsResultBody & {
+  user_email: string;
+}
