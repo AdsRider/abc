@@ -12,7 +12,7 @@ export type Ads = {
 export type AdsDAO = Omit<Ads, 'id'>;
 
 export type SaveAdsResultBody = {
-  ads_id: string;
+  ads_id: number;
   path: any;
   start_time: number;
   end_time: number;

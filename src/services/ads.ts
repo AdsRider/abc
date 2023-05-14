@@ -35,7 +35,7 @@ const adsResultFragment = sql.fragment`
 
 const adsResultObject = z.object({
   id: z.string(),
-  ads_id: z.string(),
+  ads_id: z.number(),
   user_email: z.string(),
   path: z.any(), // TODO https://zod.dev/?id=json-type
   start_time: z.date(),

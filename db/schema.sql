@@ -80,7 +80,7 @@ create table if not exists special_log (
 
 create table if not exists ads_result (
     id uuid primary key default uuid_generate_v4(),
-    ads_id text not null,
+    ads_id int not null,
     user_email text not null,
     path jsonb,
     start_time timestamptz,
