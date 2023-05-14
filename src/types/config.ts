@@ -1,5 +1,6 @@
 export type Config = {
   node_url: string;
+  NODE_ENV: 'dev' | 'prod';
   database: {
     host: string;
     username: string;
