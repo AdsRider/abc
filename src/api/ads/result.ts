@@ -5,7 +5,7 @@ import { SaveAdsResultBody, SaveAdsResultDAO } from '../../types/ads';
 
 const router = express.Router();
 
-export const AdsResultRouter = async (pool: DatabasePool) => {
+export const AdsResultRouter = (pool: DatabasePool) => {
 
   const saveResult = async (req: express.Request, res: express.Response) => {
     const user = req.session.user!;
@@ -25,6 +25,6 @@ export const AdsResultRouter = async (pool: DatabasePool) => {
     return res.json(result);
   };
 
-  router.post('/ads/result', saveResult);
+  router.post('/result', saveResult);
   return router;
 }

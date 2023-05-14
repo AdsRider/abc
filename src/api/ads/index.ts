@@ -4,6 +4,7 @@ import { createAds, getAdsById, getAdsList } from '../../services/ads';
 import { AdsDAO } from '../../types/ads';
 import { ClientError } from '../../util/error';
 import { loginAuthGuard } from '../common';
+import { AdsResultRouter } from './result';
 
 const router = express.Router();
 
@@ -43,6 +44,7 @@ export const AdsRouter = (pool: DatabasePool) => {
   router.get('/:id', getAdsDetailById);
   router.get('/', getTotalAdsList);
   router.use(loginAuthGuard(pool));
+  router.use(AdsResultRouter(pool));
   router.post('/', saveAds);
   router.delete('/');
 
