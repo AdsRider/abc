@@ -88,11 +88,11 @@ const saveAdsResult = async (conn: DatabaseTransactionConnection, body: SaveAdsR
       user_email,
       path,
       start_time,
-      end_time,
+      end_time
     ) VALUES (
       ${body.ads_id},
       ${body.user_email},
-      ${body.path},
+      ${sql.jsonb(body.path)},
       ${body.start_time},
       ${body.end_time}
     ) RETURNING ${adsResultFragment}
