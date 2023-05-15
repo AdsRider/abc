@@ -15,6 +15,7 @@ export const AdsResultRouter = (pool: DatabasePool) => {
       const dao: SaveAdsResultDAO = {
         ads_id: body.ads_id,
         path: body.path,
+        meters: body.meters,
         start_time: body.start_time,
         end_time: body.end_time,
         user_email: user.email,

@@ -83,6 +83,7 @@ create table if not exists ads_result (
     ads_id int not null,
     user_email text not null,
     path jsonb,
+    meters int not null,
     start_time timestamptz,
     end_time timestamptz default now()
 );

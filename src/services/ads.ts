@@ -29,6 +29,7 @@ const adsResultFragment = sql.fragment`
   ads_id,
   user_email,
   path,
+  meters,
   start_time,
   end_time
 `;
@@ -38,6 +39,7 @@ const adsResultObject = z.object({
   ads_id: z.number(),
   user_email: z.string(),
   path: z.any(), // TODO https://zod.dev/?id=json-type
+  meters: z.number(),
   start_time: z.date(),
   end_time: z.date(),
 });
@@ -87,12 +89,14 @@ const saveAdsResult = async (conn: DatabaseTransactionConnection, body: SaveAdsR
       ads_id,
       user_email,
       path,
+      meters,
       start_time,
       end_time
     ) VALUES (
       ${body.ads_id},
       ${body.user_email},
       ${sql.jsonb(body.path)},
+      ${body.meters},
       ${body.start_time},
       ${body.end_time}
     ) RETURNING ${adsResultFragment}

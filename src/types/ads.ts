@@ -14,6 +14,7 @@ export type AdsDAO = Omit<Ads, 'id'>;
 export type SaveAdsResultBody = {
   ads_id: number;
   path: any;
+  meters: number;
   start_time: number;
   end_time: number;
 };
