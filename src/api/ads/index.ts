@@ -16,7 +16,7 @@ export const AdsRouter = (pool: DatabasePool) => {
   };
 
   const getAdsDetailById = async (req: express.Request, res: express.Response) => {
-    const ads = await getAdsById(pool, req.params.id);
+    const ads = await getAdsById(pool, +req.params.id);
 
     return res.json(ads);
   };
