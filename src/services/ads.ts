@@ -74,7 +74,7 @@ const getAdsList = (conn: DatabasePool | DatabaseTransactionConnection) =>
   `);
 ;
 
-const getAdsById = (conn: DatabasePool | DatabaseTransactionConnection, id: string) =>
+const getAdsById = (conn: DatabasePool | DatabaseTransactionConnection, id: number) =>
   conn.one(sql.type(adsObject)`
     SELECT ${sqlAdsFragment}
     FROM ads

@@ -75,6 +75,7 @@ create table if not exists special_log (
     amount text not null,
     user_email text not null,
     address text not null,
+    hash text,
     timestamp timestamptz default now()
 );
 

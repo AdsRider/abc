@@ -2,6 +2,14 @@ import { DatabasePool, DatabaseTransactionConnection, sql } from 'slonik';
 import { z } from 'zod';
 import { transactionObject } from './blockchain';
 
+export type SaveSpecialLogDao = {
+  memo: string;
+  amount: string;
+  user_email: string;
+  address: string;
+  hash: string;
+};
+
 const withdrawalFragment = sql.fragment`
   id,
   address,
@@ -36,6 +44,7 @@ const specialLogObject = z.object({
   id: z.string(),
   memo: z.string(),
   amount: z.string(),
+  hash: z.string(),
   user_email: z.string(),
   address: z.string(),
   timestamp: z.date(),
@@ -45,6 +54,7 @@ const specialLogFragment = sql.fragment`
   id,
   memo,
   amount,
+  hash,
   user_email,
   address,
   timestamp
@@ -63,6 +73,24 @@ const saveWithdrawalHistory = (conn: DatabaseTransactionConnection, address: str
       ${amount},
       ${hash}
     ) RETURNING ${withdrawalFragment}
+  `);
+};
+
+const saveSpecialLog = (conn: DatabaseTransactionConnection, saveSpecialLogDao: SaveSpecialLogDao) => {
+  return conn.one(sql.type(specialLogObject)`
+    INSERT INTO special_log (
+      memo,
+      amount,
+      user_email,
+      address,
+      hash
+    ) VALUES (
+      ${saveSpecialLogDao.memo},
+      ${saveSpecialLogDao.amount},
+      ${saveSpecialLogDao.user_email},
+      ${saveSpecialLogDao.address},
+      ${saveSpecialLogDao.hash}
+    ) RETURNING ${specialLogFragment}
   `);
 };
 
@@ -99,7 +127,7 @@ const getHistoryByUser = async (pool: DatabasePool, email: string, address: stri
     })),
     ...specialLog.map(s => ({
       amount: s.amount,
-      hash: '',
+      hash: s.hash,
       timestamp: s.timestamp,
       type: s.memo,
     })),
@@ -127,7 +155,8 @@ const updateWithdrawalStatus = async (conn: DatabaseTransactionConnection, hash:
 
 export {
   saveWithdrawalHistory,
+  saveSpecialLog,
   getHistoryByUser,
   getWithdrawalByHash,
   updateWithdrawalStatus,
-}
+};
