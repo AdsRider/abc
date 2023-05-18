@@ -30,7 +30,7 @@ export const UserRouter = (pool: DatabasePool) => {
     const user = req.session.user!;
     const day = req.body.day as number;
     const expired_date = user.expired_date;
-    const extendPeriod = day * 24 * 60 * 60;
+    const extendPeriod = day * 24 * 60 * 60 * 1000;
     const now = new Date();
 
     const updatedDate = now < expired_date
