@@ -26,7 +26,7 @@ const adsObject = z.object({
 const adsResultFragment = sql.fragment`
   id,
   ads_id,
-  path,
+  path::jsonb,
   meters,
   hash,
   reward,
@@ -85,12 +85,20 @@ const getAdsById = (conn: DatabasePool | DatabaseTransactionConnection, id: numb
   // TODO: 상세내역
 ;
 
-const getAdsHistroyById = (conn: DatabasePool, id: number) => {
+const getAdsHistoryByAdsId = (conn: DatabasePool, id: number) => {
   return conn.any(sql.type(adsResultObject)`
     SELECT ${adsResultFragment}
     FROM ads_result
     WHERE ads_id = ${id}
     ORDER BY end_time
+  `);
+};
+
+const getAdsHistoryById = (conn: DatabasePool, id: string) => {
+  return conn.one(sql.type(adsResultObject)`
+    SELECT ${adsResultFragment}
+    FROM ads_result
+    WHERE id = ${id}
   `);
 };
 
@@ -119,5 +127,6 @@ export {
   getAdsList,
   getAdsById,
   saveAdsResult,
-  getAdsHistroyById,
+  getAdsHistoryById,
+  getAdsHistoryByAdsId,
 };

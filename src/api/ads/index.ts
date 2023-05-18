@@ -1,6 +1,6 @@
 import express from 'express';
 import { DatabasePool } from 'slonik';
-import { createAds, getAdsById, getAdsHistroyById, getAdsList } from '../../services/ads';
+import { createAds, getAdsById, getAdsHistoryById, getAdsHistoryByAdsId, getAdsList } from '../../services/ads';
 import { AdsDAO } from '../../types/ads';
 import { ClientError } from '../../util/error';
 import { loginAuthGuard } from '../common';
@@ -17,7 +17,7 @@ export const AdsRouter = (pool: DatabasePool) => {
 
   const getAdsDetailById = async (req: express.Request, res: express.Response) => {
     const ads = await getAdsById(pool, +req.params.id);
-    const history = await getAdsHistroyById(pool, +req.params.id);
+    const history = await getAdsHistoryByAdsId(pool, +req.params.id);
     return res.json({
       ...ads,
       history: history,
@@ -44,6 +44,15 @@ export const AdsRouter = (pool: DatabasePool) => {
     return res.json(ads);
   };
 
+  const getAdsHistory = async (req: express.Request, res: express.Response) => {
+    const adsId = +req.params.adsId;
+    const historyId = req.params.historyId;
+    const result = await getAdsHistoryById(pool, historyId);
+
+    return res.json(result);
+  };
+
+  router.get('/:adsId/:historyId', getAdsHistory)
   router.get('/:id', getAdsDetailById);
   router.get('/', getTotalAdsList);
   router.use(loginAuthGuard(pool));
