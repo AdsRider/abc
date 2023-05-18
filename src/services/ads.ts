@@ -27,9 +27,9 @@ const adsObject = z.object({
 const adsResultFragment = sql.fragment`
   id,
   ads_id,
-  user_email,
   path,
   meters,
+  hash,
   start_time,
   end_time
 `;
@@ -37,7 +37,7 @@ const adsResultFragment = sql.fragment`
 const adsResultObject = z.object({
   id: z.string(),
   ads_id: z.number(),
-  user_email: z.string(),
+  hash: z.string(),
   path: z.any(), // TODO https://zod.dev/?id=json-type
   meters: z.number(),
   start_time: z.date(),
@@ -83,6 +83,14 @@ const getAdsById = (conn: DatabasePool | DatabaseTransactionConnection, id: numb
   // TODO: 상세내역
 ;
 
+const getAdsHistroyById = (conn: DatabasePool, id: number) => {
+  return conn.any(sql.type(adsResultObject)`
+    SELECT ${adsResultFragment}
+    FROM ads_result
+    WHERE ads_id = ${id}
+  `);
+};
+
 const saveAdsResult = async (conn: DatabaseTransactionConnection, body: SaveAdsResultDAO) => {
   return conn.one(sql.type(adsResultObject)`
     INSERT INTO ads_result (
@@ -108,4 +116,5 @@ export {
   getAdsList,
   getAdsById,
   saveAdsResult,
+  getAdsHistroyById,
 };

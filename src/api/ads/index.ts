@@ -1,6 +1,6 @@
 import express from 'express';
 import { DatabasePool } from 'slonik';
-import { createAds, getAdsById, getAdsList } from '../../services/ads';
+import { createAds, getAdsById, getAdsHistroyById, getAdsList } from '../../services/ads';
 import { AdsDAO } from '../../types/ads';
 import { ClientError } from '../../util/error';
 import { loginAuthGuard } from '../common';
@@ -17,8 +17,11 @@ export const AdsRouter = (pool: DatabasePool) => {
 
   const getAdsDetailById = async (req: express.Request, res: express.Response) => {
     const ads = await getAdsById(pool, +req.params.id);
-
-    return res.json(ads);
+    const history = await getAdsHistroyById(pool, +req.params.id);
+    return res.json({
+      ...ads,
+      history: history,
+    });
   };
 
   const saveAds = async (req: express.Request, res: express.Response) => {

@@ -20,5 +20,6 @@ export type SaveAdsResultBody = {
 };
 
 export type SaveAdsResultDAO = SaveAdsResultBody & {
+  hash: string;
   user_email: string;
 }
