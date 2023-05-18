@@ -9,8 +9,7 @@ const sqlAdsFragment = sql.fragment`
   reward,
   image_id,
   start_date,
-  end_date,
-  user_email
+  end_date
 `;
 
 const adsObject = z.object({
@@ -21,7 +20,7 @@ const adsObject = z.object({
   image_id: z.number(),
   start_date: z.date(),
   end_date: z.date(),
-  user_email: z.string(),
+  // user_email: z.string(),
 });
 
 const adsResultFragment = sql.fragment`
