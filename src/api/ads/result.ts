@@ -36,9 +36,10 @@ export const AdsResultRouter = (pool: DatabasePool) => {
         start_time: body.start_time,
         end_time: body.end_time,
         user_email: user.email,
+        reward: new BigNumber(reward).toString(),
         hash: hash,
       };
-      await saveAdsResult(conn, dao);
+      const adsResult = await saveAdsResult(conn, dao);
 
       const specialLogDAO = {
         memo: ['ads_result', ads.id].join('-'),
@@ -50,7 +51,7 @@ export const AdsResultRouter = (pool: DatabasePool) => {
       await saveSpecialLog(conn, specialLogDAO);
 
       return {
-        amount: new BigNumber(reward).toString(),
+        reward: adsResult.reward,
         hash: hash,
       };
     });

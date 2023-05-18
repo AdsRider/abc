@@ -30,6 +30,7 @@ const adsResultFragment = sql.fragment`
   path,
   meters,
   hash,
+  reward,
   start_time,
   end_time
 `;
@@ -40,6 +41,7 @@ const adsResultObject = z.object({
   hash: z.string(),
   path: z.any(), // TODO https://zod.dev/?id=json-type
   meters: z.number(),
+  reward: z.string(),
   start_time: z.date(),
   end_time: z.date(),
 });
