@@ -47,7 +47,10 @@ export const AdsResultRouter = (pool: DatabasePool) => {
       };
       await saveSpecialLog(conn, specialLogDAO);
 
-      return hash;
+      return {
+        amount: new BigNumber(reward).toString(),
+        hash: hash,
+      };
     });
 
     return res.json(result);
