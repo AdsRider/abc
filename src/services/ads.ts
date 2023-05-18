@@ -1,6 +1,12 @@
 import { DatabasePool, DatabaseTransactionConnection, sql } from 'slonik';
 import { z } from 'zod';
 import { AdsDAO, SaveAdsResultDAO } from '../types/ads';
+const literalSchema = z.union([z.string(), z.number(), z.boolean(), z.null()]);
+type Literal = z.infer<typeof literalSchema>;
+type Json = Literal | { [key: string]: Json } | Json[];
+const jsonSchema: z.ZodType<Json> = z.lazy(() =>
+  z.union([literalSchema, z.array(jsonSchema), z.record(jsonSchema)])
+);
 
 const sqlAdsFragment = sql.fragment`
   id,
@@ -38,7 +44,7 @@ const adsResultObject = z.object({
   id: z.string(),
   ads_id: z.number(),
   hash: z.string(),
-  path: z.any(), // TODO https://zod.dev/?id=json-type
+  path: jsonSchema,
   meters: z.number(),
   reward: z.string(),
   start_time: z.date(),
@@ -109,6 +115,7 @@ const saveAdsResult = async (conn: DatabaseTransactionConnection, body: SaveAdsR
       user_email,
       path,
       meters,
+      reward,
       start_time,
       end_time
     ) VALUES (
@@ -116,6 +123,7 @@ const saveAdsResult = async (conn: DatabaseTransactionConnection, body: SaveAdsR
       ${body.user_email},
       ${sql.jsonb(body.path)},
       ${body.meters},
+      ${body.reward},
       ${body.start_time},
       ${body.end_time}
     ) RETURNING ${adsResultFragment}
