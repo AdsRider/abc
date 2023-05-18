@@ -85,6 +85,7 @@ create table if not exists ads_result (
     user_email text not null,
     path jsonb,
     meters int not null,
+    reward text not null,
     hash text,
     start_time timestamptz,
     end_time timestamptz default now()
