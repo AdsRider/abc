@@ -81,6 +81,7 @@ const getAdsById = (conn: DatabasePool | DatabaseTransactionConnection, id: numb
     SELECT ${sqlAdsFragment}
     FROM ads
     WHERE id = ${id}
+    ORDER BY id
   `);
   // TODO: 상세내역
 ;
@@ -90,6 +91,7 @@ const getAdsHistroyById = (conn: DatabasePool, id: number) => {
     SELECT ${adsResultFragment}
     FROM ads_result
     WHERE ads_id = ${id}
+    ORDER BY end_time
   `);
 };
 
