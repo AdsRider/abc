@@ -93,7 +93,7 @@ export const Daemon = async () => {
 
       if (blockDAOs.length > 0) {
         await insertBlocks(conn, blockDAOs);
-        console.log(`[info] block ${blockDAOs.length} updated last = ${blockDAOs[blockDAOs.length -1].height}`);
+        console.log(`[info] block ${blockDAOs.length} updated last = ${blockDAOs[0].height}`);
       }
 
       if (transactionDAOs.length > 0) {
