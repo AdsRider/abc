@@ -1,6 +1,7 @@
 import express from 'express';
 import { DatabasePool } from 'slonik';
-import { getBalanceByEmail } from '../../services/balance';
+import BigNumber from 'bignumber.js';
+import { getBalanceByEmail, getCurrencyBalanceByEmail, updateBalanceAndAvailable } from '../../services/balance';
 import { updateExpireDate } from '../../services/users';
 import { ClientError } from '../../util/error';
 import { loginAuthGuard } from '../common';
@@ -8,6 +9,8 @@ import { LoginRouter } from './login';
 import { DwRouter } from './dw';
 
 const router = express.Router();
+
+type TicketDay = '10' | '40' | '200'
 
 export const UserRouter = (pool: DatabasePool) => {
   const getBalanceRequestHandler = async (req: express.Request, res: express.Response) => {
@@ -28,10 +31,28 @@ export const UserRouter = (pool: DatabasePool) => {
 
   const buyTicket = async (req: express.Request, res: express.Response) => {
     const user = req.session.user!;
-    const day = req.body.day as number;
+    const day = req.body.day as TicketDay;
     const expired_date = user.expired_date;
-    const extendPeriod = day * 24 * 60 * 60 * 1000;
+    const extendPeriod = +day * 24 * 60 * 60 * 1000;
     const now = new Date();
+
+    const dayPriceTable = {
+      10: '2000',
+      40: '7000',
+      200: '30000',
+    };
+
+    if (Object.keys(dayPriceTable).includes(day)) {
+      throw new ClientError(400, 'bad_day_param');
+    }
+    const price = new BigNumber(dayPriceTable[day]);
+    const balance = await getCurrencyBalanceByEmail(pool, user.email, 'ADS');
+
+    if (price.gt(new BigNumber(balance.available))) {
+      throw new ClientError(400, 'not_enough_balance');
+    }
+
+    await updateBalanceAndAvailable(pool, user.email, 'ADS', new BigNumber(price).negated());
 
     const updatedDate = now < expired_date
       ? new Date(+expired_date + extendPeriod)
