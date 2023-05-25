@@ -7,6 +7,7 @@ import { ClientError } from '../../util/error';
 import { loginAuthGuard } from '../common';
 import { LoginRouter } from './login';
 import { DwRouter } from './dw';
+import { saveSpecialLog } from '../../services/dw';
 
 const router = express.Router();
 
@@ -45,20 +46,29 @@ export const UserRouter = (pool: DatabasePool) => {
     if (Object.keys(dayPriceTable).includes(day)) {
       throw new ClientError(400, 'bad_day_param');
     }
-    const price = new BigNumber(dayPriceTable[day]);
-    const balance = await getCurrencyBalanceByEmail(pool, user.email, 'ADS');
+    const price = dayPriceTable[day];
 
-    if (price.gt(new BigNumber(balance.available))) {
-      throw new ClientError(400, 'not_enough_balance');
-    }
+    const updatedUser = await pool.transaction(async (conn) => {
+      const balance = await getCurrencyBalanceByEmail(conn, user.email, 'ADS');
+      if (new BigNumber(price).gt(new BigNumber(balance.available))) {
+        throw new ClientError(400, 'not_enough_balance');
+      }
 
-    await updateBalanceAndAvailable(pool, user.email, 'ADS', new BigNumber(price).negated());
+      await updateBalanceAndAvailable(conn, user.email, 'ADS', new BigNumber(price).negated());
+      await saveSpecialLog(conn, {
+        memo: 'buy_ticket',
+        amount: price,
+        user_email: user.email,
+        address: user.address,
+        hash: '',
+      });
+      const updatedDate = now < expired_date
+        ? new Date(+expired_date + extendPeriod)
+        : new Date(+now + extendPeriod);
 
-    const updatedDate = now < expired_date
-      ? new Date(+expired_date + extendPeriod)
-      : new Date(+now + extendPeriod);
-
-    const updatedUser = await updateExpireDate(pool, user.email, updatedDate);
+      const updatedUser = await updateExpireDate(conn, user.email, updatedDate);
+      return updatedUser;
+    });
     req.session.user = updatedUser;
 
     return res.json(updatedUser);

@@ -40,7 +40,7 @@ const getUsersByEmail = (pool: DatabasePool, email: string) =>
   `);
 ;
 
-const updateExpireDate = (pool: DatabasePool, email: string, expired_date: Date) =>
+const updateExpireDate = (pool: DatabaseTransactionConnection, email: string, expired_date: Date) =>
   pool.one(sql.type(userObject)`
     UPDATE "user"
       SET expired_date = ${expired_date.toISOString()}
