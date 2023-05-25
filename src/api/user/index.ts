@@ -11,7 +11,7 @@ import { saveSpecialLog } from '../../services/dw';
 
 const router = express.Router();
 
-type TicketDay = '10' | '40' | '200'
+type TicketDay = '1' | '30' | '365'
 
 export const UserRouter = (pool: DatabasePool) => {
   const getBalanceRequestHandler = async (req: express.Request, res: express.Response) => {
@@ -38,9 +38,9 @@ export const UserRouter = (pool: DatabasePool) => {
     const now = new Date();
 
     const dayPriceTable = {
-      10: '2000',
-      40: '7000',
-      200: '30000',
+      1: '2000',
+      30: '7000',
+      365: '30000',
     };
 
     if (Object.keys(dayPriceTable).includes(day)) {
