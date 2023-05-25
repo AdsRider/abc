@@ -84,6 +84,29 @@ export const UserRouter = (pool: DatabasePool) => {
     }
   };
 
+  const buyAdsToken = async (req: express.Request, res: express.Response) => {
+    if ('무언가 결과체크할수있는사항') {
+      throw new ClientError(400, 'bad_request');
+    }
+    const user = req.session.user!;
+
+    // TODO: 결과값을 대입
+    const amount = new BigNumber('0');
+
+    const updatedBalance = await pool.transaction(async (conn) => {
+      await saveSpecialLog(conn, {
+        memo: 'buy_ads',
+        user_email: user.email,
+        address: user.address,
+        amount: amount.toString(),
+        hash: '',
+      });
+      return await updateBalanceAndAvailable(conn, user.email, 'ADS', amount);
+    });
+
+    return res.json(updatedBalance);
+  };
+
   router.use(LoginRouter(pool));
 
   router.use(loginAuthGuard(pool));
@@ -91,6 +114,7 @@ export const UserRouter = (pool: DatabasePool) => {
   router.get('/me', whoami);
   router.get('/logout', logout);
   router.post('/buyticket', buyTicket);
+  router.post('/buyads', buyAdsToken);
   router.use(DwRouter(pool));
 
   return router;
