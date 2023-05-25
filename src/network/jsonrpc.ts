@@ -72,7 +72,7 @@ export const generateADSTransaction = async (transactoinObject: GenerateTransact
     gas: gasPrice,
     gasLimit: 200000,
     nonce,
-    data: tokenContract.methods.transfer(to, new BigNumber(amount).shiftedBy(decimal).toString()).encodeABI(),
+    data: tokenContract.methods.transfer(to, new BigNumber(amount).shiftedBy(decimal).toFixed()).encodeABI(),
    };
 
    return transaction;
