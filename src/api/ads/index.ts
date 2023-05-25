@@ -1,6 +1,9 @@
+import BigNumber from 'bignumber.js';
 import express from 'express';
 import { DatabasePool } from 'slonik';
 import { createAds, getAdsById, getAdsHistoryById, getAdsHistoryByAdsId, getAdsList } from '../../services/ads';
+import { getCurrencyBalanceByEmail, updateBalanceAndAvailable } from '../../services/balance';
+import { saveSpecialLog } from '../../services/dw';
 import { AdsDAO } from '../../types/ads';
 import { ClientError } from '../../util/error';
 import { loginAuthGuard } from '../common';
@@ -28,6 +31,7 @@ export const AdsRouter = (pool: DatabasePool) => {
     if (req.session.user == null) {
       throw new ClientError(401, 'unauthorized');
     }
+    const user = req.session.user;
     const adsData: AdsDAO = {
       title: req.body.title,
       subtitle: req.body.subtitle,
@@ -35,9 +39,22 @@ export const AdsRouter = (pool: DatabasePool) => {
       image_id: req.body.imageId,
       start_date: req.body.startDate,
       end_date: req.body.endDate,
-      user_email: req.session.user.email,
+      user_email: user.email,
     };
     const ads = await pool.transaction(async (conn) => {
+      const balance = await getCurrencyBalanceByEmail(conn, user.email, 'ADS');
+      if (new BigNumber(adsData.reward).gt(new BigNumber(balance.available))) {
+        throw new ClientError(400, 'not_enough_balance');
+      }
+
+      await updateBalanceAndAvailable(conn, user.email, 'ADS', new BigNumber(adsData.reward).negated());
+      await saveSpecialLog(conn, {
+        memo: 'enroll_ads',
+        amount: adsData.reward,
+        user_email: user.email,
+        address: user.address,
+        hash: '',
+      });
       return await createAds(conn, adsData);
     });
 
