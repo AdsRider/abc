@@ -11,5 +11,8 @@
     "redis": {
         "host": "localhost",
         "port": "6379"
+    },
+    "payment": {
+        "secret": "dGVzdF9za196WExrS0V5cE5BcldtbzUwblgzbG1lYXhZRzVSICsgOg=="
     }
 }
