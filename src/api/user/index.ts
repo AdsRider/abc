@@ -56,7 +56,7 @@ export const UserRouter = (pool: DatabasePool) => {
 
       await updateBalanceAndAvailable(conn, user.email, 'ADS', new BigNumber(price).negated());
       await saveSpecialLog(conn, {
-        memo: '아용권구매',
+        memo: '이용권구매',
         amount: price,
         user_email: user.email,
         address: user.address,
