@@ -116,6 +116,7 @@ const saveAdsResult = async (conn: DatabaseTransactionConnection, body: SaveAdsR
       path,
       meters,
       reward,
+      hash,
       start_time,
       end_time
     ) VALUES (
@@ -124,6 +125,7 @@ const saveAdsResult = async (conn: DatabaseTransactionConnection, body: SaveAdsR
       ${sql.jsonb(body.path)},
       ${body.meters},
       ${body.reward},
+      ${body.hash},
       ${body.start_time},
       ${body.end_time}
     ) RETURNING ${adsResultFragment}
