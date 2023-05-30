@@ -117,13 +117,13 @@ const getHistoryByUser = async (pool: DatabasePool, email: string, address: stri
       amount: w.amount,
       hash: w.hash,
       timestamp: w.timestamp,
-      type: 'withdrawal',
+      type: '출금',
     })),
     ...deposit.map(d => ({
       amount: d.amount,
       hash: d.hash,
       timestamp: d.timestamp,
-      type: 'deposit',
+      type: '입금',
     })),
     ...specialLog.map(s => ({
       amount: s.amount,

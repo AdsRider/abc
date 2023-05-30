@@ -42,7 +42,7 @@ export const AdsResultRouter = (pool: DatabasePool) => {
       const adsResult = await saveAdsResult(conn, dao);
 
       const specialLogDAO = {
-        memo: ['ads_result', ads.id].join('-'),
+        memo: ['주행보상', ads.id].join('-'),
         amount: new BigNumber(reward).toString(),
         user_email: user.email,
         address: user.address,

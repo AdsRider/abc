@@ -49,7 +49,7 @@ export const AdsRouter = (pool: DatabasePool) => {
 
       await updateBalanceAndAvailable(conn, user.email, 'ADS', new BigNumber(adsData.reward).negated());
       await saveSpecialLog(conn, {
-        memo: 'enroll_ads',
+        memo: '광고등록',
         amount: adsData.reward,
         user_email: user.email,
         address: user.address,
