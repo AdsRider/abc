@@ -119,7 +119,9 @@ const getHistoryByUser = async (pool: DatabasePool, email: string, address: stri
 
   const history = [
     ...withdrawal.map(w => ({
-      amount: w.amount,
+      // transaction의 amount값에는 +-가 존재하지 않기때문에
+      // withdrawal로그 가져올시 hardcoding함
+      amount: '-' + w.amount,
       hash: w.hash,
       timestamp: w.timestamp,
       type: '출금',

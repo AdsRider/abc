@@ -27,7 +27,8 @@ export const AdsResultRouter = (pool: DatabasePool) => {
       );
       const withdrawalAccount = await getSystemAccountByType(pool, 'SYSTEM_WITHDRAWAL');
       const { address: from, privatekey } = withdrawalAccount;
-      const hash = await withdrawalADScoin(from, user.address, new BigNumber(reward).toString(), privatekey);
+      const hash = await withdrawalADScoin(from, user.address, new BigNumber(reward).toFixed(), privatekey);
+      // TODO: 해당 광고의 남은보상이 몇인지..
 
       const dao: SaveAdsResultDAO = {
         ads_id: body.ads_id,
@@ -36,14 +37,14 @@ export const AdsResultRouter = (pool: DatabasePool) => {
         start_time: body.start_time,
         end_time: body.end_time,
         user_email: user.email,
-        reward: new BigNumber(reward).toString(),
+        reward: new BigNumber(reward).toFixed(),
         hash: hash,
       };
       const adsResult = await saveAdsResult(conn, dao);
 
       const specialLogDAO = {
         memo: ['주행보상', ads.id].join('-'),
-        amount: new BigNumber(reward).toString(),
+        amount: new BigNumber(reward).toFixed(),
         user_email: user.email,
         address: user.address,
         hash: hash,

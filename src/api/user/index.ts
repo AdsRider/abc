@@ -54,10 +54,11 @@ export const UserRouter = (pool: DatabasePool) => {
         throw new ClientError(400, 'not_enough_balance');
       }
 
-      await updateBalanceAndAvailable(conn, user.email, 'ADS', new BigNumber(price).negated());
+      const adjustAmoount =  new BigNumber(price).negated();
+      await updateBalanceAndAvailable(conn, user.email, 'ADS', adjustAmoount);
       await saveSpecialLog(conn, {
         memo: '이용권구매',
-        amount: price,
+        amount: adjustAmoount.toFixed(),
         user_email: user.email,
         address: user.address,
         hash: '',

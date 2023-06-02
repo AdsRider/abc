@@ -47,10 +47,11 @@ export const AdsRouter = (pool: DatabasePool) => {
         throw new ClientError(400, 'not_enough_balance');
       }
 
-      await updateBalanceAndAvailable(conn, user.email, 'ADS', new BigNumber(adsData.reward).negated());
+      const adjustAmoount = new BigNumber(adsData.reward).negated();
+      await updateBalanceAndAvailable(conn, user.email, 'ADS', adjustAmoount);
       await saveSpecialLog(conn, {
         memo: '광고등록',
-        amount: adsData.reward,
+        amount: adjustAmoount.toFixed(),
         user_email: user.email,
         address: user.address,
         hash: '',

@@ -72,8 +72,8 @@ const updateBalanceAndAvailable = async (
 
   return pool.one(sql.type(balanceObject)`
     UPDATE balance
-      SET amount = ${updatedBalance.toString()},
-        available = ${updatedAvailable.toString()}
+      SET amount = ${updatedBalance.toFixed()},
+        available = ${updatedAvailable.toFixed()}
     WHERE id = ${balance.id}
     RETURNING *
   `);
@@ -90,7 +90,7 @@ const updateBalance = async (
 
   return pool.one(sql.type(balanceObject)`
     UPDATE balance
-      SET amount = ${updatedBalance.toString()}
+      SET amount = ${updatedBalance.toFixed()}
     WHERE id = ${balance.id}
     RETURNING *
   `);
@@ -107,7 +107,7 @@ const updateAvailable = async (
 
   return pool.one(sql.type(balanceObject)`
     UPDATE balance
-      SET available = ${updatedAvailable.toString()}
+      SET available = ${updatedAvailable.toFixed()}
     WHERE id = ${balance.id}
     RETURNING *
   `);
