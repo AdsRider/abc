@@ -95,21 +95,26 @@ const saveSpecialLog = (conn: DatabaseTransactionConnection, saveSpecialLogDao: 
 };
 
 const getHistoryByUser = async (pool: DatabasePool, email: string, address: string) => {
+  const specialLog = await pool.any(sql.type(specialLogObject)`
+    SELECT ${specialLogFragment}
+    FROM special_log
+    WHERE user_email = ${email} and LOWER(address) = ${address.toLowerCase()}
+    ORDER BY timestamp
+  `);
+  const specialLogHashList = specialLog.map(x => x.hash);
   const withdrawal = await pool.any(sql.type(withdrawalObject)`
     SELECT ${withdrawalFragment}
     FROM withdrawal
     WHERE user_email = ${email} and LOWER(address) = ${address}
+      AND hash not in (${sql.join(specialLogHashList, sql.fragment`, `)})
     ORDER BY timestamp
   `);
   const deposit = await pool.any(sql.type(transactionObject)`
     SELECT ${depositHistoryFragment}
     FROM transaction
     WHERE LOWER("to") = ${address.toLowerCase()}
-  `);
-  const specialLog = await pool.any(sql.type(specialLogObject)`
-    SELECT ${specialLogFragment}
-    FROM special_log
-    WHERE user_email = ${email} and LOWER(address) = ${address.toLowerCase()}
+      AND hash not in (${sql.join(specialLogHashList, sql.fragment`, `)})
+    ORDER BY timestamp
   `);
 
   const history = [
