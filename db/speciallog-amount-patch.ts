@@ -24,8 +24,9 @@ const patch = async () => {
         const patch = await conn.any(sql.type(specialLogObject)`
             INSERT INTO special_log
             VALUES ${sql.join(needToPatch, sql.fragment`, `)}
-            ON CONFILCT (id)
+            ON CONFLICT (id)
                 DO UPDATE SET amount = EXCLUDED.amount
+            RETRUNING *
         `);
 
         console.log(patch.length + ' row updated');
