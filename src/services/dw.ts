@@ -2,7 +2,7 @@ import { DatabasePool, DatabaseTransactionConnection, sql } from 'slonik';
 import { z } from 'zod';
 import { transactionObject } from './blockchain';
 
-export type SaveSpecialLogDao = {
+type SaveSpecialLogDao = {
   memo: string;
   amount: string;
   user_email: string;
@@ -166,4 +166,11 @@ export {
   getHistoryByUser,
   getWithdrawalByHash,
   updateWithdrawalStatus,
+
+  SaveSpecialLogDao,
+  withdrawalFragment,
+  withdrawalObject,
+  depositHistoryFragment,
+  specialLogObject,
+  specialLogFragment,
 };
