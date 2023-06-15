@@ -1,6 +1,6 @@
 export type User = {
   email: string;
-  level: string;
+  level: '광고주' | '라이더' | '운영자';
   address: string;
   expired_date: Date;
   join_time: Date;

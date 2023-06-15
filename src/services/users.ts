@@ -12,7 +12,7 @@ const sqlUserFragment = sql.fragment`
 
 const userObject = z.object({
   email: z.string(),
-  level: z.string(),
+  level: z.union([z.literal('광고주'), z.literal('라이더'), z.literal('운영자')]),
   address: z.string(),
   expired_date: z.date(),
   join_time: z.date(),

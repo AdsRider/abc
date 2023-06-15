@@ -49,6 +49,10 @@ export const LoginRouter = (pool: DatabasePool) => {
   const signIn = async (req: express.Request, res: express.Response) => {
     const body = req.body;
 
+    if (!['광고주', '라이더'].includes(body.level)) {
+      throw new ClientError(400, 'unexpected level');
+    }
+
     const user = await pool.transaction(async (conn) => {
       try {
         const address = await generateAddress();
