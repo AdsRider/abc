@@ -23,10 +23,12 @@ const createUser = (pool: DatabaseTransactionConnection, userDAO: UserDAO) =>
     INSERT INTO "user" (
       email,
       password,
+      level,
       address
     ) VALUES (
       ${userDAO.email},
       ${userDAO.password},
+      ${userDAO.level},
       ${userDAO.address}
     ) RETURNING ${sqlUserFragment}
   `);

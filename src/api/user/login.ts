@@ -57,6 +57,7 @@ export const LoginRouter = (pool: DatabasePool) => {
           email: body.email,
           password: await argon2.hash(body.password),
           address: address.address,
+          level: body.level,
         };
 
         const user = await createUser(conn, userDAO);

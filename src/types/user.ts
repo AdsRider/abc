@@ -7,6 +7,6 @@ export type User = {
   // TODO: 필요에따라 추가예정
 };
 
-export type UserDAO = Pick<User, 'email' | 'address'> & {
+export type UserDAO = Pick<User, 'email' | 'address' | 'level'> & {
   password: string;
 };
