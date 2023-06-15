@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js';
 import { DatabasePool, DatabaseTransactionConnection, sql } from 'slonik';
 import { z } from 'zod';
 import { transactionObject } from './blockchain';
@@ -18,7 +19,7 @@ import {
 const UserStatisticsObject = z.object({
   user_email: z.string(),
   meters: z.number(),
-  date: z.date(),
+  date: z.string(),
   reward: z.string(),
 });
 
@@ -41,9 +42,29 @@ const getNormalUserStatistics = async (pool: DatabasePool, email: string, from: 
       AND end_time BETWEEN ${from} AND ${to}
   `);
 
-  // TODO:
+  const map = new Map<string, {meters: number, reward: string}>()
 
-  return data;
+  data.forEach(x => {
+    const item = map.get(x.date);
+
+    const meters = item != null
+      ? item.meters + x.meters
+      : x.meters;
+    const reward = item != null
+      ? new BigNumber(item.reward).plus(new BigNumber(x.reward)).toFixed()
+      : x.reward;
+
+    map.set(x.date, { meters, reward });
+  });
+
+  const mapEntries = map.entries();
+  const result = Array.from(mapEntries).map(x => ({
+    date: x[0],
+    meters: x[1].meters,
+    reward: x[1].reward,
+  }));
+
+  return result;
 };
 
 const AdvertiserStatisticsObject = z.object({ result: z.any() });
