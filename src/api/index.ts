@@ -5,6 +5,7 @@ import { HealthCheckRouter } from './hc';
 import { ImageRouter } from './image';
 import { UserRouter } from './user';
 import { PaymentRouter } from './payment';
+import { StatisticsRouter } from './statistics';
 
 export const MainRouter = (pool: DatabasePool) => {
   const router = express.Router();
@@ -14,6 +15,7 @@ export const MainRouter = (pool: DatabasePool) => {
   router.use('/ads', AdsRouter(pool));
   router.use('/image', ImageRouter(pool));
   router.use('/payment', PaymentRouter(pool));
+  router.use('/statistics', StatisticsRouter(pool));
 
   return router;
 };
