@@ -18,6 +18,7 @@ const generateDevUser = async (pool: DatabasePool) => {
       email: DEV_USER_EMAIL,
       password: await argon2.hash(''),
       address: address.address,
+      level: '라이더',
     };
 
     return await createUser(conn, userDAO);
