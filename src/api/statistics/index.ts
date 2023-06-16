@@ -8,6 +8,9 @@ const router = express.Router();
 
 const stringFilter = (value: any) => {
   if (typeof value === 'string') {
+    if (Number.isNaN(Number(value))) {
+      return Number(value);
+    }
     return value;
   }
 
