@@ -40,7 +40,7 @@ export const StatisticsRouter = (pool: DatabasePool) => {
       '운영자': getAdminStatistics,
     } as const;
 
-    const result = levelFucntionMap[user.level as keyof typeof levelFucntionMap](pool, user.email, from, to);
+    const result = await levelFucntionMap[user.level as keyof typeof levelFucntionMap](pool, user.email, from, to);
 
     return res.json(result);
   };
