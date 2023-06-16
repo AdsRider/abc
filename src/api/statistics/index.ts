@@ -37,7 +37,7 @@ export const StatisticsRouter = (pool: DatabasePool) => {
     const levelFucntionMap = {
       '광고주': getAdvertiserStatistics,
       '라이더': getNormalUserStatistics,
-      '관리자': getAdminStatistics,
+      '운영자': getAdminStatistics,
     } as const;
 
     const result = levelFucntionMap[user.level as keyof typeof levelFucntionMap](pool, user.email, from, to);
