@@ -27,8 +27,8 @@ export const StatisticsRouter = (pool: DatabasePool) => {
       throw new ClientError(400, 'unexpected user');
     }
 
-    const from = +new Date(stringFilter(req.query.from));
-    const to = +new Date(stringFilter(req.query.to));
+    const from = new Date(stringFilter(req.query.from)).toISOString();
+    const to = new Date(stringFilter(req.query.to)).toISOString();
 
     if (Number.isNaN(from) || Number.isNaN(to)) {
       throw new ClientError(400, 'invalid query');

@@ -23,7 +23,7 @@ const UserStatisticsObject = z.object({
   reward: z.string(),
 });
 
-const getNormalUserStatistics = async (pool: DatabasePool, email: string, from: number, to: number) => {
+const getNormalUserStatistics = async (pool: DatabasePool, email: string, from: string, to: string) => {
   // const data = await pool.any(sql.type(UserStatisticsResult)`
   //   SELECT sum(meters) as meters, date(end_time)
   //   FROM (
@@ -68,7 +68,7 @@ const getNormalUserStatistics = async (pool: DatabasePool, email: string, from: 
 };
 
 const AdvertiserStatisticsObject = z.object({ result: z.any() });
-const getAdvertiserStatistics = async (pool: DatabasePool, email: string, from: number, to: number) => {
+const getAdvertiserStatistics = async (pool: DatabasePool, email: string, from: string, to: string) => {
   const ads = await pool.one(sql.type(AdvertiserStatisticsObject)`
     SELECT row_to_json(j) as result FROM (
       SELECT a.id, a.title, a.subtitle, a.reward, a.image_id, a.start_date, a.end_date, a.user_email,
@@ -93,7 +93,7 @@ const getAdvertiserStatistics = async (pool: DatabasePool, email: string, from: 
   return ads.result;
 };
 
-const getAdminStatistics = async (pool: DatabasePool, email: string, from: number, to: number) => {
+const getAdminStatistics = async (pool: DatabasePool, email: string, from: string, to: string) => {
   const specialLog = await pool.any(sql.type(specialLogObject)`
     SELECT ${specialLogFragment}
     FROM special_log
