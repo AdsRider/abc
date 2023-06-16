@@ -8,13 +8,13 @@ const router = express.Router();
 
 const stringFilter = (value: any) => {
   if (typeof value === 'string') {
-    if (Number.isNaN(Number(value))) {
+    if (!Number.isNaN(Number(value))) {
       return Number(value);
     }
     return value;
   }
 
-  throw new ClientError(400, 'invalid_value');
+  throw new ClientError(400, 'invalid value');
 }
 
 export const StatisticsRouter = (pool: DatabasePool) => {
@@ -31,7 +31,7 @@ export const StatisticsRouter = (pool: DatabasePool) => {
     const to = +new Date(stringFilter(req.query.to));
 
     if (Number.isNaN(from) || Number.isNaN(to)) {
-      throw new ClientError(400, 'invalid body');
+      throw new ClientError(400, 'invalid query');
     }
 
     const levelFucntionMap = {
