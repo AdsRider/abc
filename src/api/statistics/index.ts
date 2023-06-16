@@ -1,15 +1,18 @@
-import express from 'express';
+import express, { query } from 'express';
 import { DatabasePool } from 'slonik';
 import { getAdminStatistics, getAdvertiserStatistics, getNormalUserStatistics } from '../../services/statistics';
 import { ClientError } from '../../util/error';
 import { loginAuthGuard } from '../common';
 
-type StatisticsBody = {
-  from: Date,
-  to: Date,
-};
-
 const router = express.Router();
+
+const stringFilter = (value: any) => {
+  if (typeof value === 'string') {
+    return value;
+  }
+
+  throw new ClientError(400, 'invalid_value');
+}
 
 export const StatisticsRouter = (pool: DatabasePool) => {
 
@@ -21,9 +24,8 @@ export const StatisticsRouter = (pool: DatabasePool) => {
       throw new ClientError(400, 'unexpected user');
     }
 
-    const body = req.body as StatisticsBody;
-    const from = +new Date(body.from);
-    const to = +new Date(body.to);
+    const from = +new Date(stringFilter(req.query.from));
+    const to = +new Date(stringFilter(req.query.to));
 
     if (Number.isNaN(from) || Number.isNaN(to)) {
       throw new ClientError(400, 'invalid body');
