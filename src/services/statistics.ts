@@ -42,7 +42,24 @@ const getNormalUserStatistics = async (pool: DatabasePool, email: string, from: 
       AND end_time BETWEEN ${from} AND ${to}
   `);
 
-  const map = new Map<string, {meters: number, reward: string}>()
+  const fromDate = new Date(from);
+  const toDate = new Date(to);
+
+  const map = new Map<string, {meters: number, reward: string}>();
+  const defaultData = {
+    meters: 0,
+    reward: '0',
+  };
+
+  for (let date = fromDate; date <= toDate; date.setDate(date.getDate() + 1)) {
+    const dateString = [
+      date.getFullYear(),
+      String(date.getMonth() + 1).padStart(2, '0'),
+      String(date.getDate()).padStart(2, '0'),
+    ].join('-');
+
+    map.set(dateString, defaultData);
+  }
 
   data.forEach(x => {
     const item = map.get(x.date);
