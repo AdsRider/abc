@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { DatabasePool, DatabaseTransactionConnection, sql } from 'slonik';
+import { DatabasePool, sql } from 'slonik';
 import { z } from 'zod';
 import { transactionObject } from './blockchain';
 import {
@@ -10,12 +10,6 @@ import {
   withdrawalFragment,
 } from './dw';
 
-// const UserStatisticsResult = z.object({
-//   meters: z.number(),
-//   reward: z.string(),
-//   date: z.date(),
-// });
-
 const UserStatisticsObject = z.object({
   user_email: z.string(),
   meters: z.number(),
@@ -24,17 +18,7 @@ const UserStatisticsObject = z.object({
 });
 
 const getNormalUserStatistics = async (pool: DatabasePool, email: string, from: string, to: string) => {
-  // const data = await pool.any(sql.type(UserStatisticsResult)`
-  //   SELECT sum(meters) as meters, date(end_time)
-  //   FROM (
-  //     SELECT user_email, meters, reward, end_time
-  //     FROM ads_result
-  //     WHERE user_email = ${email}
-  //       AND end_time BETWEEN ${start} AND ${end}
-  //   ) as b
-  //   GROUP BY date(end_time)
-  // `);
-
+  // reward의 타입이 text라 database에서 sum하기 어려움
   const data = await pool.any(sql.type(UserStatisticsObject)`
     SELECT user_email, meters, reward, date(end_time)
     FROM ads_result
@@ -51,7 +35,7 @@ const getNormalUserStatistics = async (pool: DatabasePool, email: string, from: 
     reward: '0',
   };
 
-  for (let date = fromDate; date <= toDate; date.setDate(date.getDate() + 1)) {
+  for (const date = new Date(fromDate); date <= toDate; date.setDate(date.getDate() + 1)) {
     const dateString = [
       date.getFullYear(),
       String(date.getMonth() + 1).padStart(2, '0'),
