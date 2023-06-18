@@ -32,7 +32,6 @@
     "web3": "^1.8.2"
   },
   "devDependencies": {
-    "argon2-cli": "^0.25.1",
     "nodemon": "^2.0.22",
     "ts-node": "^10.9.1"
   }
