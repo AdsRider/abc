@@ -104,8 +104,8 @@ const getAdminStatistics = async (pool: DatabasePool, email: string, from: strin
 
   const specialLogHashList = specialLog.map(x => x.hash);
   const additionalWhereQuery = specialLogHashList.length > 0
-    ? sql.unsafe``
-    : sql.unsafe`AND hash not in (${sql.join(specialLogHashList, sql.fragment`, `)})`;
+    ? sql.unsafe`AND hash not in (${sql.join(specialLogHashList, sql.fragment`, `)})`
+    : sql.unsafe``;
 
   const withdrawal = await pool.any(sql.type(withdrawalObject)`
     SELECT ${withdrawalFragment}
