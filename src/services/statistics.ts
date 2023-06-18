@@ -101,19 +101,24 @@ const getAdminStatistics = async (pool: DatabasePool, email: string, from: strin
     WHERE timestamp BETWEEN ${from} AND ${to}
     ORDER BY timestamp
   `);
+
   const specialLogHashList = specialLog.map(x => x.hash);
+  const additionalWhereQuery = specialLogHashList.length > 0
+    ? sql.unsafe``
+    : sql.unsafe`AND hash not in (${sql.join(specialLogHashList, sql.fragment`, `)})`;
+
   const withdrawal = await pool.any(sql.type(withdrawalObject)`
     SELECT ${withdrawalFragment}
     FROM withdrawal
     WHERE timestamp BETWEEN ${from} AND ${to}
-      AND hash not in (${sql.join(specialLogHashList, sql.fragment`, `)})
+    ${additionalWhereQuery}
     ORDER BY timestamp
   `);
   const deposit = await pool.any(sql.type(transactionObject)`
     SELECT ${depositHistoryFragment}
     FROM transaction
     WHERE timestamp BETWEEN ${from} AND ${to}
-      AND hash not in (${sql.join(specialLogHashList, sql.fragment`, `)})
+    ${additionalWhereQuery}
     ORDER BY timestamp
   `);
 
