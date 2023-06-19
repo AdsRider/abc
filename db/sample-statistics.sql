@@ -32,4 +32,10 @@ VALUES
 (333, 'rs', 2818, '2818', '2023-06-21T17:36:18.106Z', '2023-06-21T19:36:18.106Z', '[{"latitude":"37.3649750","longitude":"126.7113722"},{"latitude":"37.3649440","longitude":"126.7113972"},{"latitude":"37.3649445","longitude":"126.7113974"},{"latitude":"37.3641231","longitude":"126.7106277"},{"latitude":"37.3630711","longitude":"126.7096472"},{"latitude":"37.3607250","longitude":"126.7136015"},{"latitude":"37.3582002","longitude":"126.7177742"},{"latitude":"37.3566663","longitude":"126.7167502"},{"latitude":"37.3548473","longitude":"126.7152131"},{"latitude":"37.3549258","longitude":"126.7154009"},{"latitude":"37.3549033","longitude":"126.7154442"},{"latitude":"37.3548848","longitude":"126.7154747"},{"latitude":"37.3546160","longitude":"126.7156350"},{"latitude":"37.3545696","longitude":"126.7156508"},{"latitude":"37.3544436","longitude":"126.7158030"},{"latitude":"37.3537356","longitude":"126.7164329"},{"latitude":"37.3532808","longitude":"126.7174224"},{"latitude":"37.3532682","longitude":"126.7174393"},{"latitude":"37.3532348","longitude":"126.7174877"},{"latitude":"37.3532342","longitude":"126.7174870"},{"latitude":"37.3531054","longitude":"126.7173640"},{"latitude":"37.3516909","longitude":"126.7197748"},{"latitude":"37.3502163","longitude":"126.7224049"},{"latitude":"37.3502836","longitude":"126.7224698"},{"latitude":"37.3503094","longitude":"126.7224947"},{"latitude":"37.3499404","longitude":"126.7230514"},{"latitude":"37.3485458","longitude":"126.7253522"},{"latitude":"37.3485348","longitude":"126.7253409"},{"latitude":"37.3483213","longitude":"126.7251463"},{"latitude":"37.3483244","longitude":"126.7251387"},{"latitude":"37.3480028","longitude":"126.7247694"}]');
 
 INSERT INTO balance (user_email, type, amount, available)
-VALUES ('rs', 'ADS', '48611', '48611');
+VALUES
+('rs', 'ADS', '48611', '48611'),
+('rs', 'KRW', '0', '0'),
+('rs', 'ETH', '0', '0'),
+('as', 'ADS', '10000000', '10000000'),
+('as', 'KRW', '0', '0'),
+('as', 'ETH', '0', '0');
