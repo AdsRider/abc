@@ -70,6 +70,8 @@ const getNormalUserStatistics = async (pool: DatabasePool, email: string, from: 
 
 const AdvertiserStatisticsObject = z.object({ result: z.any() });
 const getAdvertiserStatistics = async (pool: DatabasePool, email: string, from: string, to: string) => {
+  // 2023-09-05
+  // 광고주는 모든 광고기록을 보여주도록 하기위해 from to 를 사용하지 않도록 변경, 통일성을위해 인자로만 남겨둠
   const ads = await pool.one(sql.type(AdvertiserStatisticsObject)`
     SELECT row_to_json(j) as result FROM (
       SELECT a.id, a.title, a.subtitle, a.reward, a.image_id, a.start_date, a.end_date, a.user_email,
