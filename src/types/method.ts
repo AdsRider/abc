@@ -15,4 +15,8 @@ export type BlockChainRPC = {
     request: [string];
     response: string; // transactionHash
   },
+  eth_gasPrice: {
+    request: typeof emptyParams;
+    response: string; // hash ex) 0x5a5
+  },
 };

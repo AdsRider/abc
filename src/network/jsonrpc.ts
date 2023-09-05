@@ -62,9 +62,15 @@ export const generateAddress = () => {
   }
 };
 
+export const getGasPrice = async () => {
+  const gasPrice = await call('eth_gasPrice', []);
+
+  return gasPrice;
+};
+
 export const generateADSTransaction = async (transactoinObject: GenerateTransactionObject) => {
   const {to, amount, nonce} = transactoinObject;
-  const gasPrice = await web3.eth.getGasPrice();
+  const gasPrice = await getGasPrice();
 
   const transaction = {
     to: tokenContractAddress,
