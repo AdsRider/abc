@@ -27,11 +27,15 @@ export const StatisticsRouter = (pool: DatabasePool) => {
       throw new ClientError(400, 'unexpected user');
     }
 
-    const from = new Date(stringFilter(req.query.from)).toISOString();
-    const to = new Date(stringFilter(req.query.to)).toISOString();
-
     // 2023-09-05 관리자일경우 from to를 제거하는 방안으로 정함
-    if (level !== '광고주' && (Number.isNaN(from) || Number.isNaN(to))) {
+    const from = level === '광고주'
+      ? new Date().toISOString()
+      : new Date(stringFilter(req.query.from)).toISOString();
+    const to = level === '광고주'
+      ? new Date().toISOString()
+      : new Date(stringFilter(req.query.to)).toISOString();
+
+    if (Number.isNaN(from) || Number.isNaN(to)) {
       throw new ClientError(400, 'invalid query');
     }
 
