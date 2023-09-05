@@ -70,12 +70,12 @@ export const getGasPrice = async () => {
 
 export const generateADSTransaction = async (transactoinObject: GenerateTransactionObject) => {
   const {to, amount, nonce} = transactoinObject;
-  const gasPrice = await getGasPrice();
+  // const gasPrice = await getGasPrice();
 
   const transaction = {
     to: tokenContractAddress,
     value: '0',
-    gas: gasPrice,
+    // gas: gasPrice,
     gasLimit: 200000,
     nonce,
     data: tokenContract.methods.transfer(to, new BigNumber(amount).shiftedBy(decimal).toFixed()).encodeABI(),
