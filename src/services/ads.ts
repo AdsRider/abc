@@ -26,7 +26,7 @@ const adsObject = z.object({
   image_id: z.number(),
   start_date: z.date(),
   end_date: z.date(),
-  // user_email: z.string(),
+  // user_email: z.string().optional(),
 });
 
 const adsResultFragment = sql.fragment`
@@ -139,4 +139,7 @@ export {
   saveAdsResult,
   getAdsHistoryById,
   getAdsHistoryByAdsId,
+
+  adsObject,
+  sqlAdsFragment,
 };

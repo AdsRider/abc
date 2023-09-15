@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { DatabasePool, sql } from 'slonik';
 import { z } from 'zod';
+import { adsObject, sqlAdsFragment } from './ads';
 import { transactionObject } from './blockchain';
 import {
   withdrawalObject,
@@ -16,6 +17,8 @@ const UserStatisticsObject = z.object({
   date: z.string(),
   reward: z.string(),
 });
+
+const adsResultWithUserEmail = adsObject.extend({ email: z.string() });
 
 const getNormalUserStatistics = async (pool: DatabasePool, email: string, from: string, to: string) => {
   // reward의 타입이 text라 database에서 sum하기 어려움
@@ -68,32 +71,45 @@ const getNormalUserStatistics = async (pool: DatabasePool, email: string, from: 
   return result;
 };
 
-const AdvertiserStatisticsObject = z.object({ result: z.any() });
+const AdvertiserStatisticsObject = z.object({ data: z.any() });
 const getAdvertiserStatistics = async (pool: DatabasePool, email: string, from: string, to: string) => {
   // 2023-09-05
   // 광고주는 모든 광고기록을 보여주도록 하기위해 from to 를 사용하지 않도록 변경, 통일성을위해 인자로만 남겨둠
-  const ads = await pool.one(sql.type(AdvertiserStatisticsObject)`
-    SELECT row_to_json(j) as result FROM (
-      SELECT a.id, a.title, a.subtitle, a.reward, a.image_id, a.start_date, a.end_date, a.user_email,
-        json_agg(json_build_object(
-          'id', r.id,
-          'ads_id', r.ads_id,
-          'path', r.path,
-          'meters', r.meters,
-          'reward', r.reward,
-          'hash', r.hash,
-          'start_time', r.start_time,
-          'end_time', r.end_time
-        )) AS data
-      FROM ads a
-      LEFT JOIN ads_result as r
-        ON a.id = r.ads_id
-      WHERE a.user_email = ${email}
-      GROUP BY a.id
-    ) j
-  `);
+  const adsStatistics = await pool.transaction(async (conn) => {
+    const ads = await conn.any(sql.type(adsResultWithUserEmail)`
+      SELECT ${sqlAdsFragment}, user_email
+      FROM ads
+      WHERE user_email = ${email}
+    `);
 
-  return ads.result;
+    const result = await Promise.all(
+      ads.map(async a => {
+        const result = await conn.maybeOne(sql.type(AdvertiserStatisticsObject)`
+          SELECT json_agg(
+            json_build_object(
+              'id', id,
+              'ads_id', ads_id,
+              'path', path,
+              'meters', meters,
+              'reward', reward,
+              'hash', hash,
+              'start_time', start_time,
+              'end_time', end_time
+            )
+          ) AS data
+          FROM ads_result
+          WHERE ads_id = ${a.id}
+        `);
+
+        return {
+          ...a,
+          data: result == null ? null : result.data,
+        }
+      })
+    );
+
+    return result;
+  });
 };
 
 const getAdminStatistics = async (pool: DatabasePool, email: string, from: string, to: string) => {
