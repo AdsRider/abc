@@ -82,7 +82,7 @@ const getAdvertiserStatistics = async (pool: DatabasePool, email: string, from: 
       WHERE user_email = ${email}
     `);
 
-    const result = await Promise.all(
+    return await Promise.all(
       ads.map(async a => {
         const result = await conn.maybeOne(sql.type(AdvertiserStatisticsObject)`
           SELECT json_agg(
@@ -105,11 +105,11 @@ const getAdvertiserStatistics = async (pool: DatabasePool, email: string, from: 
           ...a,
           data: result == null ? null : result.data,
         }
-      })
+      }),
     );
-
-    return result;
   });
+
+  return adsStatistics;
 };
 
 const getAdminStatistics = async (pool: DatabasePool, email: string, from: string, to: string) => {
