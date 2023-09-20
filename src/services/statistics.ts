@@ -101,9 +101,11 @@ const getAdvertiserStatistics = async (pool: DatabasePool, email: string, from: 
           WHERE ads_id = ${a.id}
         `);
 
+        const data = result?.data;
+
         return {
           ...a,
-          data: result == null ? null : result.data,
+          data: data ?? [],
         }
       }),
     );
